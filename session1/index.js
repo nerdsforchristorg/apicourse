@@ -119,7 +119,7 @@ else {
 // global
 // const db = createDbConnection();
 app.get('/', function (req, res) {
-    console.log("req",req);
+    console.log("req");
     res.send('Hello World');
 })
 app.get('/api/users',  async function (req, res) {
@@ -158,12 +158,36 @@ app.post('/api/users', async function (req, res) {
 
 })
 
-app.put('/api/users', function (req, res) {
-    res.json([{ user: 'Fred' }, { user: 'Jane' }]);
+app.put('/api/users', async function (req, res) {
+    console.log("put: body", req.body);
+    const id = req.body.id.toString();
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const email = req.body.email;
+
+    let obj = [firstName,lastName,email,id];
+    console.log("update database",obj);
+    const result = await db.run(
+        'UPDATE users SET firstName = ?, lastName = ?, email = ? WHERE id = ?',
+        obj
+    )
+
+    res.json(result);
+
+
 })
 
-app.delete('/api/users', function (req, res) {
-    res.json([{ user: 'Fred' }, { user: 'Jane' }]);
+app.delete('/api/users/:id', async function (req, res) {
+    console.log(req.params.id);
+    const id =  req.params.id;
+    const result = await db.run(
+        'DELETE from users WHERE id = ?',
+        [id]
+    )
+    console.log("Delete:",result);
+
+    res.json(result);
+
 })
 
 

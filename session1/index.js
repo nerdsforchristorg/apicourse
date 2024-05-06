@@ -78,24 +78,29 @@ async function getOne(db,id) {
 
 // ***  App Starts Here
 let  db = null;
-const init = false;
-
+const init = true;
+try {
 if (init) {
     (async function () {
 
         console.log("Test API App Starting");
         console.log("create db connection");
         db = await createDbConnection();
+
         console.log("create User Table");
 
         await createUserTable(db);
         let obj1 = ["1", "John", "Doe", "jdoe@doe.com"];
-        let obj2 = ["1", "Fred", "Smith", "fs@smith.com"];
-        let obj3 = ["2", "Steve", "Gamer", "steve@gamer.com"];
+        let obj2 = ["2", "Fred", "Smith", "fs@smith.com"];
+        let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com"];
+        let obj4 = ["4", "Good", "Will", "good@will.com"];
+
 
         await insertRow(db, obj1);
         await insertRow(db, obj2);
         await insertRow(db, obj3);
+        await insertRow(db, obj4);
+
 
         let users = await getAll(db);
         console.log("All users List:", users);
@@ -114,7 +119,9 @@ else {
 
     })()
 }
-
+} catch(err) {
+    console.error("err",err);
+}
 
 // global
 // const db = createDbConnection();
@@ -122,6 +129,15 @@ app.get('/', function (req, res) {
     console.log("req");
     res.send('Hello World');
 })
+
+app.get('/api/users/:id',  async function (req, res) {
+    console.log("get a users by id");
+    console.log(req.params.id);
+    const users = await getOne(db,req.params.id);
+    console.log('get--> /api/users',users);
+    res.json(users);
+})
+
 app.get('/api/users',  async function (req, res) {
     console.log("get all users");
     console.log(req.params);
@@ -130,13 +146,6 @@ app.get('/api/users',  async function (req, res) {
     res.json(users);
 })
 
-app.get('/api/users/:id',  async function (req, res) {
-    console.log("get a users by id");
-    console.log(req.params.id);
-    const users = await getAll2(db);
-    console.log('get--> /api/users',users);
-    res.json(users);
-})
 app.post('/api/users', async function (req, res) {
 
     res.set('Access-Control-Allow-Origin','*');

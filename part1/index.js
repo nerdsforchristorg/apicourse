@@ -3,21 +3,13 @@ const app = express();
 app.use(express.json())
 // const sqlite3 = iimporire("sqlite3").verbose();
 import sqlite3 from 'sqlite3';
-import { open } from 'sqlite'
+import { open } from 'sqlite';
 
 const DBNAME = "./test.db";
 
-
-
-async function createDbConnection() {
-    return new sqlite3.Database(DBNAME, (error) => {
-        if (error) {
-            return console.error(error.message);
-        }
-    });
- //   console.log("Connection with SQLite has been established");
-   // return db;
-}
+import fs  from "fs"
+ 
+let db = null;
 
 async function createUserTable(db) {
     console.log("createUserTable function");
@@ -48,8 +40,9 @@ async function insertRow(db,row) {
 }
 
 
-function getAll(db) {
-
+function getAll() {
+ console.log("Git all");
+ const db = createDbConnection();   
      db.all(
         `SELECT * FROM users`, (error, rows) => {
             if (error) {
@@ -62,10 +55,27 @@ function getAll(db) {
 }
 
 
-async function getAll2(db) {
-    const result = await db.all( `SELECT * FROM users`);
-    return result;
+async function getAllUsers(db) {
+    console.log("get All Users");
+     // Query all users
+     const rows = await db.all('SELECT * FROM users');
+     //console.log('All Users:', rows);
+     return rows;
 }
+
+
+
+async function createDbConnection() {
+
+    const db = await open({
+        filename: DBNAME, // Database file
+        driver: sqlite3.Database, // Driver to use from sqlite3
+      });
+      return db;
+    }
+   
+ 
+ 
 
 async function getOne(db,id) {
     const result = await db.get('SELECT * FROM users WHERE id = ?', id)
@@ -74,62 +84,77 @@ async function getOne(db,id) {
 
 
 
+async function initDb() {
+   
+
+    console.log("Test API App Starting");
+    console.log("create db connection");
+    db = await createDbConnection();
+
+    console.log("create User Table");
+
+    await createUserTable(db);
+    let obj1 = ["1", "John", "Doe", "jdoe@doe.com"];
+    let obj2 = ["2", "Fred", "Smith", "fs@smith.com"];
+    let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com"];
+    let obj4 = ["4", "Good", "Will", "good@will.com"];
 
 
-// ***  App Starts Here
-let  db = null;
-const init = true;
-try {
-if (init) {
-    (async function () {
-
-        console.log("Test API App Starting");
-        console.log("create db connection");
-        db = await createDbConnection();
-
-        console.log("create User Table");
-
-        await createUserTable(db);
-        let obj1 = ["1", "John", "Doe", "jdoe@doe.com"];
-        let obj2 = ["2", "Fred", "Smith", "fs@smith.com"];
-        let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com"];
-        let obj4 = ["4", "Good", "Will", "good@will.com"];
+    await insertRow(db, obj1);
+    await insertRow(db, obj2);
+    await insertRow(db, obj3);
+    await insertRow(db, obj4);
 
 
-        await insertRow(db, obj1);
-        await insertRow(db, obj2);
-        await insertRow(db, obj3);
-        await insertRow(db, obj4);
+    
+   return db;
 
-
-        let users = await getAll(db);
-        console.log("All users List:", users);
-
-    })();
-}
-else {
-// this is a top-level await
-    (async () => {
-        // open the database
-        db = await open({
-            filename: DBNAME,
-            driver: sqlite3.Database
-        });
-        let users = await getAll(db);
-
-    })()
-}
-} catch(err) {
-    console.error("err",err);
 }
 
-// global
-// const db = createDbConnection();
+async function openDb() {
+    const db = await open({
+        filename: DBNAME, // Database file
+        driver: sqlite3.Database, // Driver to use from sqlite3
+      });
+      return db;
+    }
+
+
+async function bootApp() {
+
+// db the shared db variable for the database instance
+console.log("bootapp");
+if (fs.existsSync(DBNAME)) {
+    console.log('SQLite database exists.');
+    const db = await openDb();
+    //console.log("db2",db);
+    return db;
+
+} else {
+    console.log('SQLite database does not exist.');
+    return await initDb();
+}
+
+
+
+}
+
+// ***************  Define Routes  *********************
+
+app.get('/about', (req, res) => {
+    const td = new Date();
+    console.log("About was called",td);
+    res.send(`about ${td}`);
+});
+
+// get all users
 app.get('/', function (req, res) {
     console.log("req");
-    res.send('Hello World');
+    const td = new Date();
+    res.send('Hello world at '+td);
 })
 
+// get one user  (R=CRUD)
 app.get('/api/users/:id',  async function (req, res) {
     console.log("get a users by id");
     console.log(req.params.id);
@@ -138,14 +163,17 @@ app.get('/api/users/:id',  async function (req, res) {
     res.json(users);
 })
 
+
+// get all users (R = CRUD)
 app.get('/api/users',  async function (req, res) {
     console.log("get all users");
     console.log(req.params);
-    const users = await getAll2(db);
+    const users = await getAllUsers(db);
     console.log('get--> /api/users',users);
     res.json(users);
 })
 
+// create one user (C = CRUD)
 app.post('/api/users', async function (req, res) {
 
     res.set('Access-Control-Allow-Origin','*');
@@ -167,6 +195,8 @@ app.post('/api/users', async function (req, res) {
 
 })
 
+
+// update one user (U = CRUD)
 app.put('/api/users', async function (req, res) {
     console.log("put: body", req.body);
     const id = req.body.id.toString();
@@ -186,6 +216,9 @@ app.put('/api/users', async function (req, res) {
 
 })
 
+
+
+// Delete one  user
 app.delete('/api/users/:id', async function (req, res) {
     console.log(req.params.id);
     const id =  req.params.id;
@@ -198,6 +231,31 @@ app.delete('/api/users/:id', async function (req, res) {
     res.json(result);
 
 })
+
+// global
+// const db = createDbConnection();
+app.get('/api/init', function (req, res) {
+    console.log("req");
+    const td = new Date();
+    res.send('app Init'+td);
+    
+})
+
+
+
+// ***************  App Starts Here   *********************
+
+
+db = await bootApp();
+console.log("Db",db);
+
+// test db connection 
+// const users = await getAllUsers(db);
+// console.log('get--> /api/users',users);
+
+
+
+
 
 
 const server = app.listen(8081, function () {

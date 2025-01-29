@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "API Session 1",
   "main": "index.js",
- 
+  "type": "module",
   "scripts": {
     "dev": "node index.js",
     "go": "node index.js",

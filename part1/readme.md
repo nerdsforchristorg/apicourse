@@ -1,7 +1,19 @@
 # Readme for APICourse @SAU
 
- 
-# API Endpoints
+# This is a header 1
+## This is a header 2
+### This is a header 3
+#### This is a header 4
+##### This is a header 5
+###### This is a header 6
+
+* Foo 1
+* Foo 2
+
+1) Abc
+2) ABD
+
+# API Endpoints Docs
 
 # Get User Information
 
@@ -24,3 +36,18 @@ Requires a valid API token in the header.
     "name": "John Doe",
     "email": "john.doe@example.com"
   }
+  ```
+
+## Create User
+
+## POST /users/
+
+- Body
+  ```json
+  {
+    "id": "123",
+    "firstName": "John",
+    "lastName" : "Doe",
+    "email": "jdoe@example.com"
+  }
+  ```

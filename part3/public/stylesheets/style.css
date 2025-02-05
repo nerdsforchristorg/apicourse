@@ -7,3 +7,14 @@ a {
   color: #00B7FF;
 }
 
+h1 {
+  color :blue;
+}
+
+.headert {
+  color : red
+}
+
+.bigtext {
+  font-size: xx-large;
+}

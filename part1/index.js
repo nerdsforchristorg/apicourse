@@ -1,4 +1,5 @@
-import  express from 'express';
+
+import express from 'express';
 const app = express();
 app.use(express.json())
 // const sqlite3 = iimporire("sqlite3").verbose();
@@ -145,6 +146,12 @@ app.get('/about', (req, res) => {
     const td = new Date();
     console.log("About was called",td);
     res.send(`about ${td}`);
+});
+
+app.get('/aboutchris', (req, res) => {
+    const td = new Date();
+    console.log("About Chris was called",req);
+    res.send(`about Christ ${td}`);
 });
 
 // get all users

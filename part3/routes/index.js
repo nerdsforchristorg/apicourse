@@ -5,12 +5,12 @@ const path = require('path');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Express', date : "Feb 5th, 2025" });
 });
 
 /* GET Test page. */
 router.get('/test', function(req, res, next) {
-  res.render('test', { title: 'Express' });
+  res.render('test', { title: 'Test Page' });
 });
 
 // /* GET About page. */

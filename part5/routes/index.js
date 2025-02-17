@@ -10,7 +10,8 @@ router.get("/", (req, res) => {
  
  
 router.get("/about", (req, res) => {
-  res.render("about", { title: "About Us", description: "This is a Handlebars-based Express app." });
+  res.render("about",
+     { title: "About Us", description: "About", date :"Feb 12, 2025" });
 });
 
 

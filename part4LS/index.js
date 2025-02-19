@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 import express from "express";
-=======
-
-import express from 'express';
->>>>>>> 79588b85282b9f3404229569741612dd3d0e0c1b
 const app = express();
 app.use(express.json());
 // const sqlite3 = iimporire("sqlite3").verbose();
@@ -61,6 +56,27 @@ async function getAllUsers(db) {
   // Query all users
   const rows = await db.all("SELECT * FROM users");
   //console.log('All Users:', rows);
+  return rows;
+}
+
+async function findUsersByFirstName(db, name) {
+  console.log("find Users", name);
+  const rows = await db.all("SELECT * FROM users WHERE firstName = ?", [name]);
+  return rows;
+}
+
+async function findUsersByLastName(db, name) {
+  console.log("find Users", name);
+  const rows = await db.all("SELECT * FROM users WHERE lastName = ?", [name]);
+  return rows;
+}
+
+async function findUsersByName(db, firstName, lastName) {
+  console.log("find Users", name);
+  const rows = await db.all(
+    "SELECT * FROM users WHERE firstName = ? and lastName = ?",
+    [firstName, lastName]
+  );
   return rows;
 }
 
@@ -122,6 +138,29 @@ async function bootApp() {
 
 // ***************  Define Routes  *********************
 
+app.get("/api/users", async function (req, res) {
+  const query = req.query;
+  if (query.firstname && query.lastname) {
+    console.log("Full Name search", query);
+    const users = await findUsersByName(db, query.firstname, query.lastname);
+    res.json(users);
+  } else if (query.firstname) {
+    console.log("First Name search", query);
+    const users = await findUsersByFirstName(db, query.firstname);
+    res.json(users);
+  } else if (query.lastname) {
+    console.log("Last Name search", query);
+    const users = await findUsersByLastName(db, query.lastname);
+    res.json(users);
+  } else {
+    console.log("get all users");
+    console.log(req.params);
+    const users = await getAllUsers(db);
+    console.log("get--> /api/users", users);
+    res.json(users);
+  }
+});
+
 app.get("/about", (req, res) => {
   const td = new Date();
   console.log("About was called", td);
@@ -132,12 +171,6 @@ app.get("/football", (req, res) => {
   const td = new Date();
   console.log("football was called", td);
   res.send(`football ${td}`);
-});
-
-app.get('/aboutchris', (req, res) => {
-    const td = new Date();
-    console.log("About Chris was called",req);
-    res.send(`about Christ ${td}`);
 });
 
 // get all users
@@ -199,6 +232,18 @@ app.put("/api/users", async function (req, res) {
     "UPDATE users SET firstName = ?, lastName = ?, email = ? WHERE id = ?",
     obj
   );
+
+  res.json(result);
+});
+
+app.patch("/api/users", async function (req, res) {
+  console.log("patch: body", req.body);
+  const id = req.body.id.toString();
+  const email = req.body.email;
+
+  let obj = [email, id];
+  console.log("update database", obj);
+  const result = await db.run("UPDATE users SET email = ? WHERE id = ?", obj);
 
   res.json(result);
 });

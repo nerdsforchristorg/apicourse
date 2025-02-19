@@ -174,11 +174,48 @@ app.get('/aboutchris', (req, res) => {
     res.send(`about Christ ${td}`);
 });
 
-// get all users
+
+app.get('/aboutweather', (req, res) => {
+    const td = new Date();
+    console.log("About Weather",req);
+
+    const payload = [
+    
+    {
+      date : td,
+      location : "SAU",
+      timeZone : "Eastern",
+      zip : 49023,
+      state : "MI",
+      phoneNumbers : ["517","521"]     
+
+    },
+    {
+        date : td,
+        location : "SAU",
+        timeZone : "Eastern",
+        zip : 49023,
+        state : "MI",
+        phoneNumbers : ["517","521"]     
+  
+      }
+    ];
+  
+
+
+    res.json(payload);
+});
+
+
+
+
+
+
+// Root Web 
 app.get('/', function (req, res) {
     console.log("req");
     const td = new Date();
-    res.send('Hello world at '+td);
+    res.send('Hello world at abc'+td);
 })
 
 // get one user  (R=CRUD)

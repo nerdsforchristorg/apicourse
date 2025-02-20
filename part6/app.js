@@ -18,7 +18,8 @@ app.set("views", path.join(__dirname, "views"));
 // Serve static files (CSS, images, etc.)
 app.use(express.static("public"));
 
- 
+ // Enable parsing of URL-encoded data
+app.use(express.urlencoded({ extended: false }));
 const indexRoutes = require("./routes/index");
 app.use("/", indexRoutes);
  

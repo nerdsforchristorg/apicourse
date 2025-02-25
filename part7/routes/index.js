@@ -47,7 +47,6 @@ router.get("/userslist", async (req, res) => {
 
   const response = await fetch("http://localhost:8081/api/users");
   const data = await response.json();
-  console.log("data",data);
   
     res.render("userslist", { title: "About Us", description: "This is a Handlebars-based Express app.",
       users : data

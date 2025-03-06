@@ -48,7 +48,7 @@ router.get("/userslist", async (req, res) => {
   const response = await fetch("http://localhost:8081/api/users");
   const data = await response.json();
   
-    res.render("userslist", { title: "About Us", description: "This is a Handlebars-based Express app.",
+    res.render("manageusers", { title: "Manage Users", description: "This is a Handlebars-based Express app.",
       users : data
      });
   });
@@ -78,6 +78,38 @@ router.get("/userslist", async (req, res) => {
 
 
   }
+
+
+
+  // Route to handle the edit user submission
+  router.patch('/edituser', async (req, res) => {
+    try {
+      console.log("Edit user");
+      console.log("body",req.body);
+         res.render('manageusers');
+    } catch(err) {
+      console.error("edit user route",err);
+      res.send(error);
+    }
+
+    });
+
+     // Route to handle form submission
+  router.get('/edituserview', async (req, res) => {
+    try {
+      console.log("Edit user view");
+      //console.log(req.params.id);
+      console.log("body",req.body);
+         res.render('edituser');
+    } catch(err) {
+      console.error("edit user route",err);
+      res.send(error);
+    }
+
+    });
+ 
+
+
 
 
 

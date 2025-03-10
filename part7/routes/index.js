@@ -49,8 +49,8 @@ router.get("/userslist", async (req, res) => {
   const response = await fetch("http://localhost:8081/api/users");
   const data = await response.json();
 
-  res.render("userslist", {
-    title: "About Us",
+  res.render("manageusers", {
+    title: "manage",
     description: "This is a Handlebars-based Express app.",
     users: data,
   });
@@ -85,6 +85,28 @@ router.post("/adduser", async (req, res) => {
     res.render("welcome", { firstName: firstName });
   } catch (err) {
     console.error("adduser route", err);
+    res.send(error);
+  }
+});
+
+router.patch("/edituser", async (req, res) => {
+  try {
+    console.log("Edit User");
+    console.log("body", req.body);
+    res.render("manageuser");
+  } catch (err) {
+    console.error("edit user route", err);
+    res.send(error);
+  }
+});
+
+router.get("/edituserview", async (req, res) => {
+  try {
+    console.log("Edit User View");
+    console.log("body", req.body);
+    res.render("edituser");
+  } catch (err) {
+    console.error("edit user route", err);
     res.send(error);
   }
 });

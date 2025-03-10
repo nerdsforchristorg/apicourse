@@ -12,6 +12,8 @@ import fs  from "fs"
  
 let db = null;
 
+
+
 async function createUserTable(db) {
     console.log("createUserTable function");
     return db.exec(`

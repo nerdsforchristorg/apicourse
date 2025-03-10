@@ -89,4 +89,15 @@ router.post("/adduser", async (req, res) => {
   }
 });
 
+router.post("/edituser", async (req, res) => {
+  try {
+    console.log("Edit User");
+    console.log("body", req.body);
+    res.render("manageuser");
+  } catch (err) {
+    console.error("edit user route", err);
+    res.send(error);
+  }
+});
+
 module.exports = router;

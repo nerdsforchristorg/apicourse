@@ -27,6 +27,20 @@ async function createUserTable(db) {
 `);
 }
 
+async function createToDoTable(db) {
+    console.log("create ToDo table");
+    return db.exec(`
+  CREATE TABLE users
+  (
+    id  VARCHAR(10) NOT NULL,
+    firstName   VARCHAR(50) NOT NULL,
+    lastName   VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL
+    );
+`);
+}
+
+
 async function insertRow(db,row) {
  //   const [name, color, weight] = process.argv.slice(2);
     console.log("InsertRow");
@@ -105,11 +119,13 @@ async function getOne(db,id) {
     return result;
 }
 
+async function initToDoTable() {
 
+
+}
 
 async function initDb() {
    
-
     console.log("Test API App Starting");
     console.log("create db connection");
     db = await createDbConnection();
@@ -207,9 +223,6 @@ app.get('/aboutweather', (req, res) => {
 
     res.json(payload);
 });
-
-
-
 
 
 

@@ -7,12 +7,23 @@
 ## Todo
 
 - id : string/text primary key
-- dateCreated : date
+- user_id : string
+- title : string
+- description : string
+- created_at : date
+- updated_at : date
 - title : text
 - description : text
-- dueDate : date
+- due_date : date
 - completed : boolean
-- dateCompleted : date
-- group : text 
+- date_completed : date
+- category : text 
 - tags : text
-- userId : text secondary key 
+-
+
+## category
+
+- id : text 
+- name : text
+- color_code : text
+- icon : text

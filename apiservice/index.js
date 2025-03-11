@@ -24,8 +24,8 @@ async function createUserTable(db) {
 `);
 }
 
-async function createToDoTable(db) {
-  console.log("create ToDo table");
+async function createTasksTable(db) {
+  console.log("create Tasks table");
   return db.exec(`
   CREATE TABLE tasks
   (
@@ -76,7 +76,7 @@ async function insertTask(db, row) {
 }
 
 function getAll() {
-  console.log("Git all");
+  console.log("Get all");
   const db = createDbConnection();
   db.all(`SELECT * FROM users`, (error, rows) => {
     if (error) {
@@ -87,8 +87,8 @@ function getAll() {
   });
 }
 
-function getAll() {
-  console.log("Git all");
+function getAllTasks() {
+  console.log("Get all Tasks");
   const db = createDbConnection();
   db.all(`SELECT * FROM users`, (error, rows) => {
     if (error) {

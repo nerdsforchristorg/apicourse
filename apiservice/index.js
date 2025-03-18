@@ -25,12 +25,18 @@ async function createUserTable(db) {
 }
 
 async function createTasksTable(db) {
+<<<<<<< HEAD
   console.log("create Tasks table");
   return db.exec(`
+=======
+    console.log("create Tasks table");
+    return db.exec(`
+>>>>>>> d712d4735695525915a3e09b946599da98c91c8c
   CREATE TABLE tasks
   (
     id  VARCHAR(10) NOT NULL,
     user_id   VARCHAR(50) NOT NULL,
+<<<<<<< HEAD
     title    VARCHAR(50) NOT NULL,
     description  VARCHAR(500) NOT NULL,
     created_at TEXT,
@@ -41,6 +47,17 @@ async function createTasksTable(db) {
     category_id VARCHAR(10),
     tags TEXT
 
+=======
+    title   VARCHAR(50) NOT NULL,
+    description VARCHAR(500) NOT NULL,
+    created_at  TEXT,
+    updated_at  TEXT,
+    due_date TEXT,
+    completed  BOOLEAN,
+    date_completed TEXT,
+    category_id VARCHAR(10),
+    tags TEXT
+>>>>>>> d712d4735695525915a3e09b946599da98c91c8c
     );
 `);
 }
@@ -75,7 +92,26 @@ async function insertTask(db, row) {
   );
 }
 
+async function insertTask(db,row) {
+       console.log("InsertRow Task",row);
+       return db.run(
+           `INSERT INTO tasks (id, user_id, title, 
+           description, created_at, updated_at,
+           due_date, completed, category_id, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           row,
+           function (error) {
+               if (error) {
+                   console.error(error.message);
+               }
+               console.log(`Inserted a row with the ID: ${this.lastID}`);
+           }
+       );
+   }
+
+
+
 function getAll() {
+<<<<<<< HEAD
   console.log("Get all");
   const db = createDbConnection();
   db.all(`SELECT * FROM users`, (error, rows) => {
@@ -98,6 +134,35 @@ function getAllTasks() {
     return rows;
   });
 }
+=======
+ console.log("get all");
+ const db = createDbConnection();   
+     db.all(
+        `SELECT * FROM users`, (error, rows) => {
+            if (error) {
+                throw new Error(error.message);
+            }
+            console.log("getAllExit,----:",rows);
+            return rows;
+        });
+}
+
+// function getAllTasks() {
+//     console.log("Get All Tasks");
+//     const db = createDbConnection();   
+//         db.all(
+//            `SELECT * FROM tasks`, (error, rows) => {
+//                if (error) {
+//                    throw new Error(error.message);
+//                }
+//                console.log("getAllExit,----:",rows);
+//                return rows;
+//            });
+//    }
+   
+
+
+>>>>>>> d712d4735695525915a3e09b946599da98c91c8c
 
 async function getAllUsers(db) {
   console.log("get All Users");
@@ -128,6 +193,7 @@ async function findUsersByName(db, firstName, lastName) {
   return rows;
 }
 
+<<<<<<< HEAD
 async function createDbConnection() {
   const db = await open({
     filename: DBNAME, // Database file
@@ -139,6 +205,49 @@ async function createDbConnection() {
 async function getOne(db, id) {
   const result = await db.get("SELECT * FROM users WHERE id = ?", id);
   return result;
+=======
+
+async function createDbConnection() {
+
+    const db = await open({
+        filename: DBNAME, // Database file
+        driver: sqlite3.Database, // Driver to use from sqlite3
+      });
+      return db;
+  }
+   
+ async function getAllTasks(db) {
+        console.log("get All Tasks");
+         // Query all users
+         const rows = await db.all('SELECT * FROM tasks');
+         //console.log('All Users:', rows);
+         return rows;
+ } 
+ 
+
+async function getOne(db,id) {
+    const result = await db.get('SELECT * FROM users WHERE id = ?', id)
+    return result;
+}
+
+
+async function getOneTask(db,id) {
+    const result = await db.get('SELECT * FROM tasks WHERE id = ?', id)
+    return result;
+}
+
+async function initToDoTable() {
+    console.log("Seed todo table");
+    db = await createDbConnection();
+   // await createTasksTable(db);
+   let obj1 = ["1", "1", "Practice 3 Points", "Coach asked me to improve my score",
+      "03/10/2025", "03/10/2025", "03/15/2025",
+      false,
+      "basketball",
+      "improvement"
+    ];
+    await insertTask(db, obj1);
+>>>>>>> d712d4735695525915a3e09b946599da98c91c8c
 }
 
 async function initToDoTable() {}
@@ -173,10 +282,20 @@ async function openDb() {
 }
 
 async function bootApp() {
+<<<<<<< HEAD
   // db the shared db variable for the database instance
   console.log("bootapp");
   if (fs.existsSync(DBNAME)) {
     console.log("SQLite database exists.");
+=======
+
+// db the shared db variable for the database instance
+console.log("bootapp");
+await initToDoTable();
+
+if (fs.existsSync(DBNAME)) {
+    console.log('SQLite database exists.');
+>>>>>>> d712d4735695525915a3e09b946599da98c91c8c
     const db = await openDb();
     //console.log("db2",db);
     return db;
@@ -242,6 +361,12 @@ app.get("/api/users/:id", async function (req, res) {
   res.json(users);
 });
 
+app.get('/api/tasks',  async function (req, res) {
+    const tasks = await getAllTasks(db);
+    console.log('get--> /api/task',tasks);
+    res.json(tasks);
+});
+
 // get all users (R = CRUD)
 app.get("/api/users", async function (req, res) {
   const query = req.query;
@@ -304,10 +429,109 @@ app.put("/api/users", async function (req, res) {
 });
 
 // update partial user (U = CRUD)
+<<<<<<< HEAD
 app.patch("/api/users", async function (req, res) {
   console.log("patch: body", req.body);
   const id = req.body.id.toString();
   const email = req.body.email;
+=======
+app.patch('/api/users', async function (req, res) {
+    console.log("patch: body", req.body);
+    const id = req.body.id.toString();
+    const email = req.body.email;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+
+    let obj = [firstName,lastName,email,id];
+    console.log("update database",obj);
+    const result = await db.run(
+        'UPDATE users SET firstName = ?, lastName = ?, email = ? WHERE id = ?',
+        obj
+    )
+    res.json(result);
+})
+
+// get one user  (R=CRUD)
+app.get('/api/tasks/:id',  async function (req, res) {
+    console.log("get a task by id");
+    console.log(req.params.id);
+    const users = await getTask(db,req.params.id);
+    console.log('get--> /api/users',users);
+    res.json(users);
+})
+
+
+
+// create one tasks (C = CRUD)
+app.post('/api/tasks', async function (req, res) {
+
+    res.set('Access-Control-Allow-Origin','*');
+    res.set('Access-Control-Allow-Methods','GET,POST');
+    res.set('Access-Control-Allow-Headers','X-Requested-With,Content-Type');
+    console.log("post: body", req.body);
+
+    const id = req.body.id.toString();
+    const user_id = req.body.user_id;
+    const title = req.body.title;
+    const description = req.body.description;
+    const update_at = new Date();
+    const created_at = new Date();
+    const completed = req.body.completed;
+    const category_id= req.body.category_id;
+    const tags = req.body.tags;
+
+    let obj = [user_id,title,description,created_at,completed,category_id,tags,id];
+    console.log("update tags",obj);
+    const result = await db.run(
+        'UPDATE tasks SET user_id = ?, title = ?, description = ?, crated_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?',
+        obj
+    )
+    res.json(result);
+
+})
+
+
+
+
+// update one user (U = CRUD)
+app.put('/api/tasks', async function (req, res) {
+    console.log("put: tasks", req.body);
+    const id = req.body.id.toString();
+    const user_id = req.body.user_id;
+    const title = req.body.title;
+    const description = req.body.description;
+    const update_at = new Date();
+    const completed = req.body.completed;
+    const category_id= req.body.category_id;
+    const tags = req.body.tags;
+
+    let obj = [user_id,title,description,update_at,completed,category_id,tags,id];
+    console.log("update tags",obj);
+    const result = await db.run(
+        'UPDATE tasks SET user_id = ?, title = ?, description = ?, update_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?',
+        obj
+    )
+    res.json(result);
+})
+
+
+
+// Delete one  task
+app.delete('/api/tasks/:id', async function (req, res) {
+    console.log('delete tasks',req.params.id);
+    const id =  req.params.id;
+    const result = await db.run(
+        'DELETE from tasks WHERE id = ?',
+        [id]
+    )
+    console.log("Delete:",result);
+    res.json(result);
+})
+
+
+
+
+>>>>>>> d712d4735695525915a3e09b946599da98c91c8c
 
   let obj = [email, id];
   console.log("update database", obj);

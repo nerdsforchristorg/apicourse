@@ -4,7 +4,7 @@
 ## User
 
 
-## Todo
+## tasks
 
 - id : string/text primary key
 - user_id : string
@@ -12,12 +12,10 @@
 - description : string
 - created_at : date
 - updated_at : date
-- title : text
-- description : text
 - due_date : date
 - completed : boolean
 - date_completed : date
-- category : text 
+- category_id : text 
 - tags : text
 -
 

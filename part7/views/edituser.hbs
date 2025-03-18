@@ -19,18 +19,18 @@
 =======
  
     <h2>Edit User</h2>
-    <form action="/edituser" method="PATCH">
+    <form action="/updateuser/{{id}}" method="POST">
         <label for="name">First Name:</label>
-        <input type="text" id="firstName" name="firstName" required>
+        <input type="text" id="firstName" name="firstName"  value="{{firstName}}"  required>
         <br><br>
         
         <label for="name">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" required>
+        <input type="text" id="lastName" name="lastName" value="{{lastName}}" required>
         <br><br>
         
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" value="{{email}}" required>
         <br><br>
 
 

@@ -121,11 +121,29 @@ router.get("/edituserview", async (req, res) => {
 =======
 
   // Route to handle the edit user submission
-  router.patch('/edituser', async (req, res) => {
+  router.post('/updateuser/:id', async (req, res) => {
+    console.log("update user");
+  //  console.log(req.params.id);    
     try {
-      console.log("Edit user");
-      console.log("body",req.body);
-         res.render('manageusers');
+      // call patch api 
+      const data = {
+        id : req.params.id,
+        lastName : req.body.lastName,
+        firstName : req.body.firstName,
+        email : req.body.email
+      }
+      console.log("payload",data);
+      const response = await fetch("http://localhost:8081/api/users/",{
+        method: "PATCH", // HTTP method
+        headers: {
+            "Content-Type": "application/json", // Send as JSON
+        },
+        body: JSON.stringify(data), 
+      });
+       // redirect to userlist page
+       console.log("send to user list page");
+       res.redirect("/userslist");
+      
     } catch(err) {
       console.error("edit user route",err);
       res.send(error);
@@ -134,12 +152,18 @@ router.get("/edituserview", async (req, res) => {
     });
 
      // Route to handle form submission
-  router.get('/edituserview', async (req, res) => {
+  router.get('/edituserview/:id', async (req, res) => {
+    console.log("Edit user view");
+    
     try {
-      console.log("Edit user view");
-      //console.log(req.params.id);
-      console.log("body",req.body);
-         res.render('edituser');
+      console.log(req.params.id);
+
+      const response = await fetch("http://localhost:8081/api/users/"+req.params.id);
+      const data = await response.json();
+
+      // fetch user 
+      console.log("Edit Found",data);
+         res.render('edituser',data);
     } catch(err) {
       console.error("edit user route",err);
       res.send(error);

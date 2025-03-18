@@ -1,41 +1,33 @@
-<<<<<<< HEAD
 <h2>Edit User</h2>
-<form action="/edituser" method="GET">
+<form action="/updateuser/{{id}}" method="POST">
   <label for="name">First Name:</label>
-  <input type="text" id="firstName" name="firstName" required />
+  <input
+    type="text"
+    id="firstName"
+    name="firstName"
+    value="{{firstName}}"
+    required
+  />
   <br /><br />
 
   <label for="name">Last Name:</label>
-  <input type="text" id="lastName" name="lastName" required />
+  <input
+    type="text"
+    id="lastName"
+    name="lastName"
+    value="{{lastName}}"
+    required
+  />
   <br /><br />
 
   <label for="email">Email:</label>
-  <input type="email" id="email" name="email" required />
+  <input type="email" id="email" name="email" value="{{email}}" required />
   <br /><br />
 
   <input type="submit" value="OK" />
-  <a type="submit" href="/listusers" class="btn btn-secondary">Close</a>
+  <button
+    type="button"
+    href="/listusers"
+    class="btn btn-secondary"
+  >Close</button>
 </form>
-=======
- 
-    <h2>Edit User</h2>
-    <form action="/edituser" method="PATCH">
-        <label for="name">First Name:</label>
-        <input type="text" id="firstName" name="firstName" required>
-        <br><br>
-        
-        <label for="name">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" required>
-        <br><br>
-        
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br><br>
-
-
-  <input type="submit" value="OK" />
-  <button type="button" href="/listusers" class="btn btn-secondary">Close</button>
-    </form>
- 
->>>>>>> 3e124e5dee414e9e162b9bfffb2cf1539ea6a0a7

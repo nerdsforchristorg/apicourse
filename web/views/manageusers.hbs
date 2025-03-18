@@ -1,42 +1,38 @@
 <h1> Users List from API</h1>
 
-<<<<<<< HEAD
 <ul class="list-group">
   {{#each users}}
-
     <li class="list-group-item" aria-current="true">
-      <strong>{{firstName}}-{{lastName}} </strong>
+      <a
+        href="/edituserview/{{id}}"
+        type="button"
+        class="btn btn-primary"
+      >Edit</a>
+
+      <strong>{{id}} {{firstName}}-{{lastName}}</strong>
       -
       {{email}}
-      <a href="/edituserview" type="button" class="btn btn-primary">Select</a>
-
     </li>
-
   {{/each}}
 </ul>
-=======
-    <ul class="list-group">
-        {{#each users}}
-        <li  class="list-group-item " aria-current="true">
-                 <a href="/edituserview" type="button" class="btn btn-primary">Edit</a>
-     
-            <strong>{{id}} {{firstName}}-{{lastName}}</strong> - {{email}}
-          </li>
-        {{/each}}
-    </ul>
 
 <div class="card" style="width: 18rem;">
-  <img src="..." class="card-img-top" alt="...">
+  <img src="..." class="card-img-top" alt="..." />
   <div class="card-body">
     <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <p class="card-text">Some quick example text to build on the card title and
+      make up the bulk of the card's content.</p>
     <a href="#" class="btn btn-primary">Go somewhere</a>
   </div>
 </div>
 
-
-<div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+<div
+  class="progress"
+  role="progressbar"
+  aria-label="Basic example"
+  aria-valuenow="0"
+  aria-valuemin="0"
+  aria-valuemax="100"
+>
   <div class="progress-bar" style="width: 20%"></div>
 </div>
-  
->>>>>>> 3e124e5dee414e9e162b9bfffb2cf1539ea6a0a7

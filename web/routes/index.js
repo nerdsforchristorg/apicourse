@@ -48,18 +48,11 @@ router.get("/userslist", async (req, res) => {
 
   const response = await fetch("http://localhost:8081/api/users");
   const data = await response.json();
-<<<<<<< HEAD
 
   res.render("manageusers", {
-    title: "manage",
+    title: "Manage Users",
     description: "This is a Handlebars-based Express app.",
     users: data,
-=======
-  
-    res.render("manageusers", { title: "Manage Users", description: "This is a Handlebars-based Express app.",
-      users : data
-     });
->>>>>>> 3e124e5dee414e9e162b9bfffb2cf1539ea6a0a7
   });
 });
 
@@ -107,72 +100,57 @@ router.patch("/edituser", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-router.get("/edituserview", async (req, res) => {
+// Route to handle the edit user submission
+router.patch("/edituser", async (req, res) => {
   try {
-    console.log("Edit User View");
+    console.log("Edit user");
     console.log("body", req.body);
-    res.render("edituser");
+    res.render("manageusers");
   } catch (err) {
     console.error("edit user route", err);
     res.send(error);
   }
 });
-=======
 
-  // Route to handle the edit user submission
-  router.patch('/edituser', async (req, res) => {
-    try {
-      console.log("Edit user");
-      console.log("body",req.body);
-         res.render('manageusers');
-    } catch(err) {
-      console.error("edit user route",err);
-      res.send(error);
-    }
+// Route to handle form submission
+router.get("/edituserview/:id", async (req, res) => {
+  console.log("Edit user view");
+  try {
+    console.log(req.params.id);
+    const response = await fetch(
+      "http://localhost:8081/api/users/" + req.params.id
+    );
+    const data = await response.json();
 
+    // fetch user
+    console.log("Edit found", data);
+    res.render("edituser", data);
+  } catch (err) {
+    console.error("edit user route", err);
+    res.send(error);
+  }
+});
+
+// Route to handle form submission
+router.post("/adduser", async (req, res) => {
+  try {
+    console.log("add User Route /adduser");
+    console.log("body", req.body);
+    const { firstName, lastName, email } = req.body;
+    const id = uuidv4().substring(0, 7); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
+    console.log("create user", id, firstName, lastName, email);
+    const response = await createUser({
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
     });
-
-     // Route to handle form submission
-  router.get('/edituserview', async (req, res) => {
-    try {
-      console.log("Edit user view");
-      //console.log(req.params.id);
-      console.log("body",req.body);
-         res.render('edituser');
-    } catch(err) {
-      console.error("edit user route",err);
-      res.send(error);
-    }
-
-    });
- 
-
-
-
-
-
-  // Route to handle form submission
- router.post('/adduser', async (req, res) => {
-    try {
-      console.log("add User Route /adduser");
-      console.log("body",req.body);
-      const { firstName, lastName,email} = req.body;
-      const id = uuidv4().substring(0,7); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
-      console.log("create user",id,firstName,lastName,email);
-      const response = await createUser({id : id, firstName : firstName, lastName : lastName, email : email });
-      // todo check response 
-      res.render('welcome',{firstName :firstName});
-    } catch(err) {
-      console.error("adduser route",err);
-      res.send(error);
-    }
-
-    });
-
-
-
-
->>>>>>> 3e124e5dee414e9e162b9bfffb2cf1539ea6a0a7
+    // todo check response
+    res.render("welcome", { firstName: firstName });
+  } catch (err) {
+    console.error("adduser route", err);
+    res.send(error);
+  }
+});
 
 module.exports = router;

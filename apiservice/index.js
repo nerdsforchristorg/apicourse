@@ -25,29 +25,12 @@ async function createUserTable(db) {
 }
 
 async function createTasksTable(db) {
-<<<<<<< HEAD
-  console.log("create Tasks table");
-  return db.exec(`
-=======
     console.log("create Tasks table");
     return db.exec(`
->>>>>>> d712d4735695525915a3e09b946599da98c91c8c
   CREATE TABLE tasks
   (
     id  VARCHAR(10) NOT NULL,
     user_id   VARCHAR(50) NOT NULL,
-<<<<<<< HEAD
-    title    VARCHAR(50) NOT NULL,
-    description  VARCHAR(500) NOT NULL,
-    created_at TEXT,
-    updated_at TEXT,
-    due_date TEXT,
-    completed BOOLEAN,
-    date_completed TEXT,
-    category_id VARCHAR(10),
-    tags TEXT
-
-=======
     title   VARCHAR(50) NOT NULL,
     description VARCHAR(500) NOT NULL,
     created_at  TEXT,
@@ -57,7 +40,6 @@ async function createTasksTable(db) {
     date_completed TEXT,
     category_id VARCHAR(10),
     tags TEXT
->>>>>>> d712d4735695525915a3e09b946599da98c91c8c
     );
 `);
 }
@@ -111,30 +93,6 @@ async function insertTask(db,row) {
 
 
 function getAll() {
-<<<<<<< HEAD
-  console.log("Get all");
-  const db = createDbConnection();
-  db.all(`SELECT * FROM users`, (error, rows) => {
-    if (error) {
-      throw new Error(error.message);
-    }
-    console.log("getAllExit,----:", rows);
-    return rows;
-  });
-}
-
-function getAllTasks() {
-  console.log("Get all Tasks");
-  const db = createDbConnection();
-  db.all(`SELECT * FROM users`, (error, rows) => {
-    if (error) {
-      throw new Error(error.message);
-    }
-    console.log("getAllExit,----:", rows);
-    return rows;
-  });
-}
-=======
  console.log("get all");
  const db = createDbConnection();   
      db.all(
@@ -162,7 +120,6 @@ function getAllTasks() {
    
 
 
->>>>>>> d712d4735695525915a3e09b946599da98c91c8c
 
 async function getAllUsers(db) {
   console.log("get All Users");
@@ -193,19 +150,6 @@ async function findUsersByName(db, firstName, lastName) {
   return rows;
 }
 
-<<<<<<< HEAD
-async function createDbConnection() {
-  const db = await open({
-    filename: DBNAME, // Database file
-    driver: sqlite3.Database, // Driver to use from sqlite3
-  });
-  return db;
-}
-
-async function getOne(db, id) {
-  const result = await db.get("SELECT * FROM users WHERE id = ?", id);
-  return result;
-=======
 
 async function createDbConnection() {
 
@@ -247,7 +191,6 @@ async function initToDoTable() {
       "improvement"
     ];
     await insertTask(db, obj1);
->>>>>>> d712d4735695525915a3e09b946599da98c91c8c
 }
 
 async function initToDoTable() {}
@@ -282,12 +225,6 @@ async function openDb() {
 }
 
 async function bootApp() {
-<<<<<<< HEAD
-  // db the shared db variable for the database instance
-  console.log("bootapp");
-  if (fs.existsSync(DBNAME)) {
-    console.log("SQLite database exists.");
-=======
 
 // db the shared db variable for the database instance
 console.log("bootapp");
@@ -295,7 +232,6 @@ await initToDoTable();
 
 if (fs.existsSync(DBNAME)) {
     console.log('SQLite database exists.');
->>>>>>> d712d4735695525915a3e09b946599da98c91c8c
     const db = await openDb();
     //console.log("db2",db);
     return db;
@@ -429,12 +365,6 @@ app.put("/api/users", async function (req, res) {
 });
 
 // update partial user (U = CRUD)
-<<<<<<< HEAD
-app.patch("/api/users", async function (req, res) {
-  console.log("patch: body", req.body);
-  const id = req.body.id.toString();
-  const email = req.body.email;
-=======
 app.patch('/api/users', async function (req, res) {
     console.log("patch: body", req.body);
     const id = req.body.id.toString();
@@ -531,7 +461,6 @@ app.delete('/api/tasks/:id', async function (req, res) {
 
 
 
->>>>>>> d712d4735695525915a3e09b946599da98c91c8c
 
   let obj = [email, id];
   console.log("update database", obj);

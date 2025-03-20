@@ -45,17 +45,21 @@ async function createTasksTable(db) {
 }
 
 async function tableCheck(db, tableName) {
-  db.get(
+  console.log("table check", tableName);
+  return db.get(
     `SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
     [tableName],
     (err, row) => {
       if (err) {
         console.error(err.message);
+        return false;
       } else {
         if (row) {
           console.log(`Table "${tableName}" exists.`);
+          return true;
         } else {
           console.log(`Table "${tableName}" does not exist.`);
+          return false;
         }
       }
     }
@@ -175,8 +179,8 @@ async function getOneTask(db, id) {
 
 async function initToDoTable() {
   console.log("Seed todo table");
-  db = await createDbConnection();
-  const check = await tableCheck(db, "tasks");
+  const _db = await createDbConnection();
+  const check = await tableCheck(_db, "tasks");
   if (check) {
     return;
   }

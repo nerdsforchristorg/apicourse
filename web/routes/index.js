@@ -112,6 +112,8 @@ router.get("/userslist", async (req, res) => {
 
     });
 
+
+    
      // Route to handle form submission
   router.get('/edituserview/:id', async (req, res) => {
     console.log("Edit user view");
@@ -154,6 +156,33 @@ router.get("/userslist", async (req, res) => {
     }
 
     });
+    
+    
+    app.get('/login', (req, res) => {
+      res.send(`
+        <h2>Login</h2>
+        <form method="POST" action="/login">
+          <input name="username" placeholder="Username" required /><br/>
+          <input type="password" name="password" placeholder="Password" required /><br/>
+          <button type="submit">Login</button>
+        </form>
+      `);
+    });
+    
+
+    router.get('/adduser', async (req, res) => {
+      console.log("add user user view");
+      
+      try {
+           res.render('adduser',{});
+      } catch(err) {
+        console.error("add user route",err);
+        res.send(error);
+      }
+  
+      });
+
+
 
 
 

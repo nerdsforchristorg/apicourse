@@ -4,8 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const router = express.Router();
-
+const session = require('express-session');
 const exphbs = require("express-handlebars");
+const bodyParser = require('body-parser');
+
 
 var app = express();
 
@@ -14,6 +16,19 @@ var app = express();
 app.engine("hbs", exphbs.engine({ extname: "hbs", defaultLayout: "main" }));
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views"));
+
+
+// Session middleware
+app.use(session({
+  secret: 'your-secret-key', // Replace with a strong, random secret
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true } // Set to true in production with HTTPS
+}));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 
 // Serve static files (CSS, images, etc.)
 app.use(express.static("public"));

@@ -1,0 +1,21 @@
+ 
+    <h2>Add User</h2>
+    <form action="/adduser" method="POST">
+        <label for="name">First Name:</label>
+        <input type="text" id="firstName" name="firstName"  value="{{firstName}}"  required>
+        <br><br>
+        
+        <label for="name">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" value="{{lastName}}" required>
+        <br><br>
+        
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{email}}" required>
+        <br><br>
+
+
+  <input type="submit" value="OK" />
+  <button type="button" href="/listusers" class="btn btn-secondary">Close</button>
+    </form>
+ 

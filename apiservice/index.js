@@ -22,7 +22,8 @@ async function createUserTable(db) {
     id  VARCHAR(10) NOT NULL,
     firstName   VARCHAR(50) NOT NULL,
     lastName   VARCHAR(50) NOT NULL,
-    email VARCHAR(50) NOT NULL
+    email VARCHAR(50) NOT NULL,
+    pw VARCHAR(50) NOT NULL,
     );
 `);
 }
@@ -52,7 +53,7 @@ async function insertRow(db,row) {
  //   const [name, color, weight] = process.argv.slice(2);
     console.log("InsertRow");
     return db.run(
-        `INSERT INTO users (id, firstName, lastName, email) VALUES (?, ?, ?, ?)`,
+        `INSERT INTO users (id, firstName, lastName, email, pw) VALUES (?, ?, ?, ?, ?)`,
         row,
         function (error) {
             if (error) {
@@ -109,6 +110,13 @@ function getAll() {
 //    }
    
 
+async function openDb() {
+    const db = await open({
+        filename: DBNAME, // Database file
+        driver: sqlite3.Database, // Driver to use from sqlite3
+      });
+      return db;
+    }
 
 
 async function getAllUsers(db) {
@@ -167,10 +175,34 @@ async function getOneTask(db,id) {
     return result;
 }
 
+
+
+
+async function tableExist(tableName) {
+    
+    db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name=?`, [tableName], (err, row) => {
+        if (err) {
+          console.error(err.message);
+        }
+        if (row) {
+          console.log(`Table "${tableName}" exists.`);
+          return true;
+        } else {
+          console.log(`Table "${tableName}" does not exist.`);
+          return false;
+        }
+      });
+      
+ db.close();
+    
+}
+
+
+
 async function initToDoTable() {
     console.log("Seed todo table");
     db = await createDbConnection();
-   // await createTasksTable(db);
+ 
    let obj1 = ["1", "1", "Practice 3 Points", "Coach asked me to improve my score",
       "03/10/2025", "03/10/2025", "03/15/2025",
       false,
@@ -180,19 +212,19 @@ async function initToDoTable() {
     await insertTask(db, obj1);
 }
 
-async function initDb() {
+ 
+async function initUsersTable() {
    
-    console.log("Test API App Starting");
     console.log("create db connection");
     db = await createDbConnection();
 
     console.log("create User Table");
 
     await createUserTable(db);
-    let obj1 = ["1", "John", "Doe", "jdoe@doe.com"];
-    let obj2 = ["2", "Fred", "Smith", "fs@smith.com"];
-    let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com"];
-    let obj4 = ["4", "Good", "Will", "good@will.com"];
+    let obj1 = ["1", "John", "Doe", "jdoe@doe.com", "goodgrief"];
+    let obj2 = ["2", "Fred", "Smith", "fs@smith.com", "goodgrief"];
+    let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com", "goodgrief"];
+    let obj4 = ["4", "Good", "Will", "good@will.com", "goodgrief"];
 
 
     await insertRow(db, obj1);
@@ -200,36 +232,32 @@ async function initDb() {
     await insertRow(db, obj3);
     await insertRow(db, obj4);
 
-
     
    return db;
 
 }
 
-async function openDb() {
-    const db = await open({
-        filename: DBNAME, // Database file
-        driver: sqlite3.Database, // Driver to use from sqlite3
-      });
-      return db;
-    }
+
 
 
 async function bootApp() {
 
 // db the shared db variable for the database instance
 console.log("bootapp");
-await initToDoTable();
 
 if (fs.existsSync(DBNAME)) {
     console.log('SQLite database exists.');
+ 
     const db = await openDb();
     //console.log("db2",db);
     return db;
 
 } else {
     console.log('SQLite database does not exist.');
-    return await initDb();
+    await initUsersTable();
+    await initToDoTable();
+    return;
+ 
 }
 
 

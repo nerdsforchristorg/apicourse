@@ -11,7 +11,6 @@ const bodyParser = require('body-parser');
 
 var app = express();
 
-
 // Set Handlebars as the templating engine
 app.engine("hbs", exphbs.engine({ extname: "hbs", defaultLayout: "main" }));
 app.set("view engine", "hbs");

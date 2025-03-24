@@ -1,0 +1,20 @@
+{
+  "name": "session1",
+  "version": "1.0.0",
+  "description": "API Session 1",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js",
+    "go": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "foobar" : "echo hello"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}

@@ -1,16 +1,23 @@
 <h1> Users List from API</h1>
 
-    <ul class="list-group">
-        {{#each users}}
-        <li  class="list-group-item " aria-current="true">
-           <a href="/edituserview/{{id}}" type="button" class="btn btn-outline-primary">
-           <i class="bi-pencil"></i>
+<ul class="list-group">
+  {{#each users}}
+    <li class="list-group-item" aria-current="true">
+      <a
+        href="/edituserview/{{id}}"
+        type="button"
+        class="btn btn-outline-primary"
+      >
+        <i class="bi-pencil"></i>
       </a>
-            <strong>{{id}} {{firstName}}-{{lastName}}</strong> - {{email}}
-        </li>
-        {{/each}}
-    </ul>
+      <strong>{{id}} {{firstName}}-{{lastName}}</strong>
+      -
+      {{email}}
+    </li>
+  {{/each}}
+</ul>
 
+<<<<<<< HEAD
  
     
 
@@ -21,3 +28,8 @@
 
 
   
+=======
+<a type="button" href="/adduser" class="btn btn-primary">
+  <i class="bi bi-plus"></i>
+</a>
+>>>>>>> refs/remotes/origin/main

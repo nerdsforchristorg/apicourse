@@ -20,7 +20,7 @@ async function createUserTable(db) {
     firstName   VARCHAR(50) NOT NULL,
     lastName   VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    pw VARCHAR(50) NOT NULL,
+    pw VARCHAR(50) NOT NULL
     );
 `);
 }
@@ -71,7 +71,7 @@ async function insertRow(db, row) {
   //   const [name, color, weight] = process.argv.slice(2);
   console.log("InsertRow");
   return db.run(
-    `INSERT INTO users (id, firstName, lastName, email) VALUES (?, ?, ?, ?)`,
+    `INSERT INTO users (id, firstName, lastName, email, pw) VALUES (?, ?, ?, ?,?)`,
     row,
     function (error) {
       if (error) {
@@ -87,7 +87,7 @@ async function insertTask(db, row) {
   return db.run(
     `INSERT INTO tasks (id, user_id, title, 
            description, created_at, updated_at,
-           due_date, completed, category_id, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           due_date, completed, date_completed, category_id, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)`,
     row,
     function (error) {
       if (error) {
@@ -209,7 +209,7 @@ async function initToDoTable() {
   if (check) {
     return;
   }
-  await createTasksTable(db);
+  await createTasksTable(_db);
   let obj1 = [
     "1",
     "1",
@@ -219,31 +219,34 @@ async function initToDoTable() {
     "03/10/2025",
     "03/15/2025",
     false,
+    "",
     "basketball",
     "improvement",
   ];
-  await insertTask(db, obj1);
+  await insertTask(_db, obj1);
 }
 
-async function initDb() {
-  console.log("Test API App Starting");
-  console.log("create db connection");
-  db = await createDbConnection();
+async function initUserTable() {
+  console.log("InitUserTable");
+  const _db = await createDbConnection();
 
-  console.log("create User Table");
+  const check = await tableCheck(_db, "users");
+  if (check) {
+    return;
+  }
+ 
+  await createUserTable(_db);
+  let obj1 = ["1", "John", "Doe", "jdoe@doe.com","goodgrief"];
+  let obj2 = ["2", "Fred", "Smith", "fs@smith.com","goodgrief"];
+  let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com","goodgrief"];
+  let obj4 = ["4", "Good", "Will", "good@will.com","goodgrief"];
 
-  await createUserTable(db);
-  let obj1 = ["1", "John", "Doe", "jdoe@doe.com"];
-  let obj2 = ["2", "Fred", "Smith", "fs@smith.com"];
-  let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com"];
-  let obj4 = ["4", "Good", "Will", "good@will.com"];
+  await insertRow(_db, obj1);
+  await insertRow(_db, obj2);
+  await insertRow(_db, obj3);
+  await insertRow(_db, obj4);
 
-  await insertRow(db, obj1);
-  await insertRow(db, obj2);
-  await insertRow(db, obj3);
-  await insertRow(db, obj4);
-
-  return db;
+  return _db;
 }
 
 async function openDb() {
@@ -257,16 +260,19 @@ async function openDb() {
 async function bootApp() {
   // db the shared db variable for the database instance
   console.log("bootapp");
-  await initToDoTable();
-
+ 
   if (fs.existsSync(DBNAME)) {
     console.log("SQLite database exists.");
     const db = await openDb();
+    await initToDoTable();
+    await initUserTable();
     //console.log("db2",db);
     return db;
   } else {
     console.log("SQLite database does not exist.");
-    return await initDb();
+    await initToDoTable();
+    await initUserTable();
+  
   }
 }
 

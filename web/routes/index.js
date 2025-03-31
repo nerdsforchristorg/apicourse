@@ -169,8 +169,10 @@ router.get("/adduser", async (req, res) => {
 // Middleware to check if the user is authenticated
 function isAuthenticated(req, res, next) {
   if (req.session.userId) {
+      console.log("isAuthenticated");
       next();
   } else {
+    console.log("Not Authenticated");
       res.status(401).send('Unauthorized');
   }
 }
@@ -229,7 +231,7 @@ router.get('/protected', isAuthenticated, (req, res) => {
 });
 
 // Logout route
-router.post('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
       if (err) {
           console.error('Error logging out:', err);

@@ -170,7 +170,11 @@ router.get("/adduser", async (req, res) => {
 function isAuthenticated(req, res, next) {
   if (req.session.userId) {
     next();
+    console.log("isAuthenticated");
+    next();
   } else {
+    res.status(401).send("Unauthorized");
+    console.log("Not Authenticated");
     res.status(401).send("Unauthorized");
   }
 }

@@ -4,6 +4,7 @@ app.use(express.json());
 // const sqlite3 = iimporire("sqlite3").verbose();
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import bcrypt from "bcrypt";
 
 const DBNAME = "./test.db";
 
@@ -22,7 +23,7 @@ async function createUserTable(db) {
     email VARCHAR(50) NOT NULL,
     pw VARCHAR(50) NOT NULL,
     role VARCHAR(20) NOT NULL,
-    imageURL VARCHAR(50)
+    imageURL VARCHAR(50) 
     );
 `);
 }
@@ -73,7 +74,7 @@ async function insertRow(db, row) {
   //   const [name, color, weight] = process.argv.slice(2);
   console.log("InsertRow");
   return db.run(
-    `INSERT INTO users (id, firstName, lastName, email, pw, role) VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO users (id, firstName, lastName, email, pw, role) VALUES (?, ?, ?, ?,?,?)`,
     row,
     function (error) {
       if (error) {
@@ -136,6 +137,12 @@ async function getAllUsers(db) {
 async function findUsersByFirstName(db, name) {
   console.log("find Users", name);
   const rows = await db.get("SELECT * FROM users WHERE firstName = ?", [name]);
+  return rows;
+}
+
+async function findUsersByEmail(db, email) {
+  console.log("find Users By Email", email);
+  const rows = await db.get("SELECT * FROM users WHERE email = ?", [email]);
   return rows;
 }
 
@@ -240,9 +247,16 @@ async function initUserTable() {
   let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com", "goodgrief", "user"];
   let obj4 = ["4", "Good", "Will", "good@will.com", "goodgrief", "user"];
 
+  obj1[4] = await bcrypt.hash(obj1[4], 10);
   await insertRow(_db, obj1);
+
+  obj2[4] = await bcrypt.hash(obj2[4], 10);
   await insertRow(_db, obj2);
+
+  obj3[4] = await bcrypt.hash(obj3[4], 10);
   await insertRow(_db, obj3);
+
+  obj4[4] = await bcrypt.hash(obj4[4], 10);
   await insertRow(_db, obj4);
 
   return _db;
@@ -327,6 +341,15 @@ app.get("/api/users/:id", async function (req, res) {
   console.log(req.params.id);
   const users = await getOne(db, req.params.id);
   console.log("get--> /api/users", users);
+  res.json(users);
+});
+
+// get one user  (R=CRUD)
+app.get("/api/users/email/:id", async function (req, res) {
+  console.log("get a users by email");
+  console.log(req.params.id);
+  const users = await findUsersByEmail(db, req.params.id);
+  console.log("get--> /api/users/email", users);
   res.json(users);
 });
 

@@ -20,7 +20,9 @@ async function createUserTable(db) {
     firstName   VARCHAR(50) NOT NULL,
     lastName   VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    pw VARCHAR(50) NOT NULL
+    pw VARCHAR(50) NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    imageURL VARCHAR(50)
     );
 `);
 }
@@ -71,7 +73,7 @@ async function insertRow(db, row) {
   //   const [name, color, weight] = process.argv.slice(2);
   console.log("InsertRow");
   return db.run(
-    `INSERT INTO users (id, firstName, lastName, email, pw) VALUES (?, ?, ?, ?, ?)`,
+    `INSERT INTO users (id, firstName, lastName, email, pw, role) VALUES (?, ?, ?, ?, ?, ?)`,
     row,
     function (error) {
       if (error) {
@@ -87,7 +89,7 @@ async function insertTask(db, row) {
   return db.run(
     `INSERT INTO tasks (id, user_id, title, 
            description, created_at, updated_at,
-           due_date, completed, date_completed, category_id, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           due_date, completed, date_completed, category_id, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)`,
     row,
     function (error) {
       if (error) {
@@ -224,8 +226,7 @@ async function initToDoTable() {
 }
 
 async function initUserTable() {
-  console.log("Test API App Starting");
-  console.log("create db connection");
+  console.log("InitUserTable");
   const _db = await createDbConnection();
 
   const check = await tableCheck(_db, "users");
@@ -233,13 +234,11 @@ async function initUserTable() {
     return;
   }
 
-  console.log("create User Table");
-
   await createUserTable(_db);
-  let obj1 = ["1", "John", "Doe", "jdoe@doe.com", "goodgrief"];
-  let obj2 = ["2", "Fred", "Smith", "fs@smith.com", "goodgrief"];
-  let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com", "goodgrief"];
-  let obj4 = ["4", "Good", "Will", "good@will.com", "goodgrief"];
+  let obj1 = ["1", "John", "Doe", "jdoe@doe.com", "goodgrief", "admin"];
+  let obj2 = ["2", "Fred", "Smith", "fs@smith.com", "goodgrief", "user"];
+  let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com", "goodgrief", "user"];
+  let obj4 = ["4", "Good", "Will", "good@will.com", "goodgrief", "user"];
 
   await insertRow(_db, obj1);
   await insertRow(_db, obj2);

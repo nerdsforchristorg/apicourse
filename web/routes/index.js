@@ -1,8 +1,13 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 const path = require("path");
 
+const bcrypt = require("bcrypt");
+
 const { v4: uuidv4 } = require("uuid");
+
+// In-memory user database (replace with a real database in production)
+const users = [];
 
 router.get("/", (req, res) => {
   res.render("home", { title: "Home Page", message: "Welcome to Handlebars!" });
@@ -159,6 +164,92 @@ router.get("/adduser", async (req, res) => {
     console.error("add user route", err);
     res.send(error);
   }
+});
+
+// Middleware to check if the user is authenticated
+function isAuthenticated(req, res, next) {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+}
+
+// Login route
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find((user) => user.username === username);
+
+  if (!user) {
+    return res.status(401).send("Invalid username or password");
+  }
+
+  try {
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (passwordMatch) {
+      req.session.userId = username;
+      console.log("users", users);
+      res.send("Login successful");
+    } else {
+      res.status(401).send("Invalid username or password");
+    }
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+// Registration route
+router.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+
+  // Check if the username already exists
+  if (users.find((user) => user.username === username)) {
+    return res.status(400).send("Username already exists");
+  } else {
+    console.log("user was registered", users);
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    users.push({ username, password: hashedPassword });
+    console.log("users", users);
+    res.send("User registered successfully");
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+// Protected route (example)
+router.get("/protected", isAuthenticated, (req, res) => {
+  console.log("Protected", users);
+  res.send(`Welcome, ${req.session.userId}! This is a protected route.`);
+});
+
+// Logout route
+router.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error logging out:", err);
+      res.status(500).send("Internal server error");
+    } else {
+      res.send("Logged out successfully");
+    }
+  });
+});
+
+router.get("/login", (req, res) => {
+  res.render("login", {});
+});
+
+router.get("/showsessions", (req, res) => {
+  console.log("users", users);
+  res.render("showsessions", { users: users });
+});
+
+router.get("/register", (req, res) => {
+  res.render("register", {});
 });
 
 module.exports = router;

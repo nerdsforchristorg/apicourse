@@ -3,3 +3,5 @@ part1/node_modules
 .idea/
 .idea*
 package-lock.json
+*.db
+

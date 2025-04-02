@@ -10,7 +10,9 @@ const { v4: uuidv4 } = require("uuid");
 const users = [];
 
 router.get("/", (req, res) => {
-  res.render("home", { title: "Home Page", message: "Welcome to Handlebars!" });
+  res.render("home", 
+    { title: "SAU Todo-App", 
+      message: "Welcome to get work done!" });
 });
 
 router.get("/about", (req, res) => {
@@ -249,10 +251,16 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/showsessions', (req, res) => {
- console.log("users",users);
+ console.log("signedinUser",req.session.userId);
+ 
   res.render("showsessions", {users : users});
 });
 
+router.get('/whoami', (req, res) => {
+  console.log("whoami");
+  const userId = req.session.userId ? req.session.userId : "no one";
+   res.render("whoami", {userId : userId});
+ });
 
 
 

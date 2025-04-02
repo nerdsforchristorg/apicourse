@@ -12,3 +12,7 @@ npm install express-session body-parser bcrypt
 ~~~js
 const session = require('express-session');
 ~~~
+
+
+## Open Source Image Placements
+https://picsum.photos/

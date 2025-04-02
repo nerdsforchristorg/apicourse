@@ -1,0 +1,16 @@
+<h2>Add Task</h2>
+<form action="/addtask" method="POST">
+  <label for="id">Task ID:</label>
+  <input type="text" id="id" name="id" value="{{id}}" required />
+  <br /><br />
+
+  <label for="user_id">User ID:</label>
+  <input type="text" id="user_id" name="user_id" value="{{user_id}}" required />
+
+  <input type="submit" value="OK" />
+  <button
+    type="button"
+    href="/listusers"
+    class="btn btn-secondary"
+  >Close</button>
+</form>

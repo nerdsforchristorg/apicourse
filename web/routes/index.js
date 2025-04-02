@@ -182,14 +182,19 @@ function isAuthenticated(req, res, next) {
 // Login route
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const user = users.find((user) => user.username === username);
+  // const user = users.find((user) => user.username === username);
+  const response = await fetch(
+    "http://localhost:8081/api/users/email/" + username
+  );
+  const user = await response.json();
+  console.log("user", user);
 
   if (!user) {
     return res.status(401).send("Invalid username or password");
   }
 
   try {
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.pw);
     if (passwordMatch) {
       req.session.userId = username;
       console.log("users", users);
@@ -254,6 +259,17 @@ router.get("/showsessions", (req, res) => {
 
 router.get("/register", (req, res) => {
   res.render("register", {});
+});
+
+router.get("/addtask", async (req, res) => {
+  console.log("add task task view");
+  const payload = { user_id: "abc", id: "1" };
+  try {
+    res.render("addtask", payload);
+  } catch (err) {
+    console.error("add task route", err);
+    res.send(err);
+  }
 });
 
 module.exports = router;

@@ -4,8 +4,7 @@ app.use(express.json());
 // const sqlite3 = iimporire("sqlite3").verbose();
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
-import bcrypt from 'bcrypt';
-
+import bcrypt from "bcrypt";
 
 const DBNAME = "./test.db";
 
@@ -141,7 +140,6 @@ async function findUsersByFirstName(db, name) {
   return rows;
 }
 
-
 async function findUsersByEmail(db, email) {
   console.log("find Users By Email", email);
   const rows = await db.get("SELECT * FROM users WHERE email = ?", [email]);
@@ -189,29 +187,26 @@ async function getOneTask(db, id) {
   return result;
 }
 
-
-
-
 async function tableExist(tableName) {
-    
-    db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name=?`, [tableName], (err, row) => {
-        if (err) {
-          console.error(err.message);
-        }
-        if (row) {
-          console.log(`Table "${tableName}" exists.`);
-          return true;
-        } else {
-          console.log(`Table "${tableName}" does not exist.`);
-          return false;
-        }
-      });
-      
- db.close();
-    
+  db.get(
+    `SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
+    [tableName],
+    (err, row) => {
+      if (err) {
+        console.error(err.message);
+      }
+      if (row) {
+        console.log(`Table "${tableName}" exists.`);
+        return true;
+      } else {
+        console.log(`Table "${tableName}" does not exist.`);
+        return false;
+      }
+    }
+  );
+
+  db.close();
 }
-
-
 
 async function initToDoTable() {
   console.log("Seed todo table");
@@ -245,24 +240,23 @@ async function initUserTable() {
   if (check) {
     return;
   }
- 
+
   await createUserTable(_db);
-  let obj1 = ["1", "John", "Doe", "jdoe@doe.com","goodgrief","admin"];
-  let obj2 = ["2", "Fred", "Smith", "fs@smith.com","goodgrief","user"];
-  let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com","goodgrief","user"];
-  let obj4 = ["4", "Good", "Will", "good@will.com","goodgrief","user"];
+  let obj1 = ["1", "John", "Doe", "jdoe@doe.com", "goodgrief", "admin"];
+  let obj2 = ["2", "Fred", "Smith", "fs@smith.com", "goodgrief", "user"];
+  let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com", "goodgrief", "user"];
+  let obj4 = ["4", "Good", "Will", "good@will.com", "goodgrief", "user"];
 
-
-  obj1[4]  = await bcrypt.hash(obj1[4], 10);
+  obj1[4] = await bcrypt.hash(obj1[4], 10);
   await insertRow(_db, obj1);
-  
-  obj2[4]  = await bcrypt.hash(obj2[4], 10);
+
+  obj2[4] = await bcrypt.hash(obj2[4], 10);
   await insertRow(_db, obj2);
-  
-  obj3[4]  = await bcrypt.hash(obj3[4], 10);
+
+  obj3[4] = await bcrypt.hash(obj3[4], 10);
   await insertRow(_db, obj3);
 
-  obj4[4]  = await bcrypt.hash(obj4[4], 10);
+  obj4[4] = await bcrypt.hash(obj4[4], 10);
   await insertRow(_db, obj4);
 
   return _db;
@@ -279,7 +273,7 @@ async function openDb() {
 async function bootApp() {
   // db the shared db variable for the database instance
   console.log("bootapp");
- 
+
   if (fs.existsSync(DBNAME)) {
     console.log("SQLite database exists.");
     const db = await openDb();
@@ -291,7 +285,6 @@ async function bootApp() {
     console.log("SQLite database does not exist.");
     await initToDoTable();
     await initUserTable();
-  
   }
 }
 
@@ -359,8 +352,6 @@ app.get("/api/users/email/:id", async function (req, res) {
   console.log("get--> /api/users/email", users);
   res.json(users);
 });
-
-
 
 app.get("/api/tasks", async function (req, res) {
   const tasks = await getAllTasks(db);

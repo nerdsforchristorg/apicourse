@@ -6,7 +6,6 @@ const bcrypt = require("bcrypt");
 
 const { v4: uuidv4 } = require("uuid");
 
-
 // In-memory user database (replace with a real database in production)
 const users = [];
 
@@ -22,6 +21,10 @@ router.get("/", (req, res) => {
       userId : userId,
       isLoggedIn : isLoggedIn,
       message: "Welcome to get work done!" });
+  res.render("home", {
+    title: "SAU Todo-App",
+    message: "Welcome to get work done!",
+  });
 });
 
 router.get("/about", (req, res) => {
@@ -194,7 +197,7 @@ function isAuthenticated(req, res, next) {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   // const user = users.find((user) => user.username === username);
-  // console.assert 
+  // console.assert
   const response = await fetch(
     "http://localhost:8081/api/users/email/" + username
   );
@@ -271,7 +274,7 @@ router.get("/showsessions", (req, res) => {
 
 router.get("/whoami", (req, res) => {
   const userId = req.session.userId ? req.session.userId : "no user id";
-  console.log("whoami",userId);
+  console.log("whoami", userId);
 
   res.render("whoami", { userId: userId });
 });
@@ -287,8 +290,10 @@ router.get("/addtask", async (req, res) => {
   const userId = req.session.userId ? req.session.userId : null;
   const isLoggedIn = userId ? true : false;
    
-  const taskId = uuidv4(); 
-  const payload = { user_id: userId, isLoggedIn : isLoggedIn, id: taskId };
+ 
+
+  const taskId = uuidv4();
+  const payload = { user_id: userId, id: taskId };
 
   try {
     res.render("addtask", payload);

@@ -10,9 +10,17 @@ const { v4: uuidv4 } = require("uuid");
 // In-memory user database (replace with a real database in production)
 const users = [];
 
+//****  home */
+
 router.get("/", (req, res) => {
+
+  const userId = req.session.userId ? req.session.userId : null;
+  const isLoggedIn = userId ? true : false;
+   
   res.render("home", 
     { title: "SAU Todo-App", 
+      userId : userId,
+      isLoggedIn : isLoggedIn,
       message: "Welcome to get work done!" });
 });
 
@@ -268,16 +276,19 @@ router.get("/whoami", (req, res) => {
   res.render("whoami", { userId: userId });
 });
 
+//****  register 
 router.get("/register", (req, res) => {
   res.render("register", {});
 });
 
+//****  addTask 
 router.get("/addtask", async (req, res) => {
   console.log("add task task view");
-  const userId = req.session.userId ? req.session.userId : "no user id";
-  
+  const userId = req.session.userId ? req.session.userId : null;
+  const isLoggedIn = userId ? true : false;
+   
   const taskId = uuidv4(); 
-  const payload = { user_id: userId, id: taskId };
+  const payload = { user_id: userId, isLoggedIn : isLoggedIn, id: taskId };
 
   try {
     res.render("addtask", payload);

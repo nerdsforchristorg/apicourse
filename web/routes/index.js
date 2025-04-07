@@ -10,9 +10,10 @@ const { v4: uuidv4 } = require("uuid");
 const users = [];
 
 router.get("/", (req, res) => {
-  res.render("home", 
-    { title: "SAU Todo-App", 
-      message: "Welcome to get work done!" });
+  res.render("home", {
+    title: "SAU Todo-App",
+    message: "Welcome to get work done!",
+  });
 });
 
 router.get("/about", (req, res) => {
@@ -199,8 +200,7 @@ router.post("/login", async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.pw);
     if (passwordMatch) {
       req.session.userId = username;
-      console.log("users", users);
-      res.send("Login successful");
+      res.render("home", { title: `Welcome: ${username}` });
     } else {
       res.status(401).send("Invalid username or password");
     }
@@ -259,13 +259,21 @@ router.get("/showsessions", (req, res) => {
   res.render("showsessions", { users: users });
 });
 
+router.get("/whoami", (req, res) => {
+  const userId = req.session.userId ? req.session.userId : "no user id";
+  console.log("whoami", userId);
+  res.render("whoami", { userId: userId });
+});
+
 router.get("/register", (req, res) => {
   res.render("register", {});
 });
 
 router.get("/addtask", async (req, res) => {
   console.log("add task task view");
-  const payload = { user_id: "abc", id: "1" };
+  const userId = req.session.userId ? req.session.userId : "no user id";
+  const taskId = uuidv4();
+  const payload = { user_id: userId, id: taskId };
   try {
     res.render("addtask", payload);
   } catch (err) {

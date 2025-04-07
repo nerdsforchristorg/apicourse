@@ -17,7 +17,7 @@ async function createUserTable(db) {
   return db.exec(`
   CREATE TABLE users
   (
-    id  VARCHAR(10) NOT NULL,
+    id  VARCHAR(60) NOT NULL,
     firstName   VARCHAR(50) NOT NULL,
     lastName   VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
@@ -33,7 +33,7 @@ async function createTasksTable(db) {
   return db.exec(`
   CREATE TABLE tasks
   (
-    id  VARCHAR(10) NOT NULL,
+    id  VARCHAR(60) NOT NULL,
     user_id   VARCHAR(50) NOT NULL,
     title   VARCHAR(50) NOT NULL,
     description VARCHAR(500) NOT NULL,

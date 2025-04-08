@@ -457,6 +457,7 @@ app.post("/api/tasks", async function (req, res) {
   const user_id = req.body.user_id;
   const title = req.body.title;
   const description = req.body.description;
+  // auto create
   const update_at = new Date();
   const created_at = new Date();
   const completed = req.body.completed;
@@ -475,7 +476,7 @@ app.post("/api/tasks", async function (req, res) {
   ];
   console.log("update tags", obj);
   const result = await db.run(
-    "UPDATE tasks SET user_id = ?, title = ?, description = ?, crated_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?",
+    "UPDATE tasks SET user_id = ?, title = ?, description = ?, created_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?",
     obj
   );
   res.json(result);

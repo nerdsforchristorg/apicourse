@@ -307,7 +307,6 @@ router.get("/addtask", async (req, res) => {
   console.log("add task task view");
   const userId = req.session.userId ? req.session.userId : null;
   const isLoggedIn = userId ? true : false;
-
   const taskId = uuidv4();
   const payload = { user_id: userId, id: taskId };
 

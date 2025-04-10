@@ -12,17 +12,13 @@ const users = [];
 //****  home */
 
 router.get("/", (req, res) => {
-
   const userId = req.session.userId ? req.session.userId : null;
   const isLoggedIn = userId ? true : false;
-   
-  res.render("home", 
-    { title: "SAU Todo-App", 
-      userId : userId,
-      isLoggedIn : isLoggedIn,
-      message: "Welcome to get work done!" });
+
   res.render("home", {
     title: "SAU Todo-App",
+    userId: userId,
+    isLoggedIn: isLoggedIn,
     message: "Welcome to get work done!",
   });
 });
@@ -77,6 +73,28 @@ router.get("/userslist", async (req, res) => {
 
 const createUser = async (payload) => {
   fetch("http://localhost:8081/api/users", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Server response:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
+const createTask = async (payload) => {
+  fetch("http://localhost:8081/api/tasks", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -279,18 +297,16 @@ router.get("/whoami", (req, res) => {
   res.render("whoami", { userId: userId });
 });
 
-//****  register 
+//****  register
 router.get("/register", (req, res) => {
   res.render("register", {});
 });
 
-//****  addTask 
+//****  addTask
 router.get("/addtask", async (req, res) => {
   console.log("add task task view");
   const userId = req.session.userId ? req.session.userId : null;
   const isLoggedIn = userId ? true : false;
-   
- 
 
   const taskId = uuidv4();
   const payload = { user_id: userId, id: taskId };
@@ -300,6 +316,30 @@ router.get("/addtask", async (req, res) => {
   } catch (err) {
     console.error("add task route", err);
     res.send(err);
+  }
+});
+
+router.post("/addtask", async (req, res) => {
+  const { id, user_id, title, description, tags } = req.body;
+
+  console.log("addtask", id, user_id, title, description, tags);
+  try {
+    const completed = req.body.completed;
+    const category_id = req.body.category_id;
+    const status = await createTask({
+      id: id,
+      user_id: user_id,
+      title: title,
+      description: description,
+      tags: tags,
+      completed: false,
+      category_id: "abc",
+    });
+    console.log("status", status);
+    res.render("home", {});
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).send("Internal server error");
   }
 });
 

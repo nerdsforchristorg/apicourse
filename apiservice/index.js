@@ -90,13 +90,17 @@ async function insertTask(db, row) {
   return db.run(
     `INSERT INTO tasks (id, user_id, title, 
            description, created_at, updated_at,
-           due_date, completed, date_completed, category_id, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)`,
+           due_date, completed, date_completed, category_id, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     row,
     function (error) {
       if (error) {
         console.error(error.message);
       }
       console.log(`Inserted a row with the ID: ${this.lastID}`);
+      return {
+        err: error,
+        ok: false,
+      };
     }
   );
 }
@@ -457,28 +461,33 @@ app.post("/api/tasks", async function (req, res) {
   const user_id = req.body.user_id;
   const title = req.body.title;
   const description = req.body.description;
-  const update_at = new Date();
-  const created_at = new Date();
+  // auto create
+  const updated_at = new Date().toString();
+  const created_at = new Date().toString();
   const completed = req.body.completed;
   const category_id = req.body.category_id;
   const tags = req.body.tags;
 
-  let obj = [
+  let objArr = [
+    id,
     user_id,
     title,
     description,
     created_at,
+    updated_at,
+    "",
     completed,
+    "",
     category_id,
     tags,
-    id,
   ];
-  console.log("update tags", obj);
-  const result = await db.run(
-    "UPDATE tasks SET user_id = ?, title = ?, description = ?, crated_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?",
-    obj
-  );
-  res.json(result);
+  console.log("update tags", objArr);
+  const status = await insertTask(db, objArr);
+  if (status.changes) {
+    console.log("task insert completed", status);
+    return res.json({ status: true });
+  }
+  res.json({ status: false });
 });
 
 // update one user (U = CRUD)

@@ -3,31 +3,11 @@
     <h3 class="text-center mb-4">Sign In</h3>
     <form method="POST" action="/login">
 
-      <div class="mb-3">
-        <label
-          for="username"
-          placeholder="Email"
-          required
-          class="form-label"
-        >Email address</label>
-
-        <input
-          type="text"
-          class="form-control"
-          id="username"
-          placeholder="you@example.com"
-          required
-        />
+        <input type="text" name="username" class="form-control" id="username" placeholder="you@example.com" required>
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          placeholder="••••••••"
-          required
-        />
+        <input type="password" name="password" class="form-control" id="password" placeholder="••••••••" required>
       </div>
       <div class="d-grid">
         <button type="submit" class="btn btn-primary">Login</button>

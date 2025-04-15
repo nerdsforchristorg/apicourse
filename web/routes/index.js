@@ -351,4 +351,33 @@ router.post("/addtask", async (req, res) => {
   }
 });
 
+router.get("/viewtasks", async (req, res) => {
+  // get the login user
+  const response = await fetch("http://localhost:8081/api/tasks");
+  const data = await response.json();
+
+  res.render("viewtasks", {
+    title: "View Tasks",
+    tasks : data,
+  });
+});
+
+router.get("/edittask/:id", async (req, res) => {
+  // get the login user
+  console.log('edittask',req.params.id);
+
+  const response = await fetch(
+    "http://localhost:8081/api/tasks/" + req.params.id
+  );
+  const data = await response.json();
+
+  res.render("edittask", {
+    title: "Edit Tasks",
+    tasks : data,
+  });
+});
+
+
+
+
 module.exports = router;

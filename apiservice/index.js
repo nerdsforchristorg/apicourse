@@ -137,6 +137,11 @@ async function getAllUsers(db) {
   //console.log('All Users:', rows);
   return rows;
 }
+async function getTaskById(db, id) {
+  console.log("get task", id);
+  const rows = await db.get("SELECT * FROM tasks WHERE id = ?", [id]);
+  return rows;
+}
 
 async function findUsersByFirstName(db, name) {
   console.log("find Users", name);
@@ -445,9 +450,9 @@ app.patch("/api/users", async function (req, res) {
 app.get("/api/tasks/:id", async function (req, res) {
   console.log("get a task by id");
   console.log(req.params.id);
-  const users = await getTask(db, req.params.id);
-  console.log("get--> /api/users", users);
-  res.json(users);
+  const tasks = await getTaskById(db, req.params.id);
+  console.log("get--> /api/users", tasks);
+  res.json(tasks);
 });
 
 // create one tasks (C = CRUD)
@@ -490,7 +495,7 @@ app.post("/api/tasks", async function (req, res) {
   res.json({ status: false });
 });
 
-// update one user (U = CRUD)
+// update one task (U = CRUD)
 app.put("/api/tasks", async function (req, res) {
   console.log("put: tasks", req.body);
   const id = req.body.id.toString();

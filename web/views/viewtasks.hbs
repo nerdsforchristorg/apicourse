@@ -1,0 +1,32 @@
+<h1> My Tasks </h1>
+
+<ul class="list-group">
+  {{#each tasks}}
+    <li class="list-group-item" aria-current="true">
+      <a
+        href="/edittask/{{id}}"
+        type="button"
+        class="btn btn-outline-primary"
+      >
+        <i class="bi-pencil"></i>
+      </a>
+       <a
+        href="/deltask/{{id}}"
+        type="button"
+        class="btn btn-outline-primary"
+      >
+        <i class="bi-check-circle"></i>
+      </a>
+      <a
+        href="/deltask/{{id}}"
+        type="button"
+        class="btn btn-outline-primary"
+      >
+        <i class="bi-x-square"></i>
+      </a>
+      <strong>{{title}}-{{description}}</strong>
+      -
+      {{email}}
+    </li>
+  {{/each}}
+</ul>

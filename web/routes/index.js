@@ -213,7 +213,14 @@ function isAuthenticated(req, res, next) {
 
 // Login route
 router.post("/login", async (req, res) => {
+  console.log("login route");
+  
+  try {
   const { username, password } = req.body;
+  console.log("username",username);
+  console.log("password",password);
+  
+
   // const user = users.find((user) => user.username === username);
   // console.assert
   const response = await fetch(
@@ -226,18 +233,20 @@ router.post("/login", async (req, res) => {
     return res.status(401).send("Invalid username or password");
   }
 
-  try {
+  
     const passwordMatch = await bcrypt.compare(password, user.pw);
     if (passwordMatch) {
       req.session.userId = username;
       console.log("users", users);
       res.render("home", {});
     } else {
-      res.status(401).send("Invalid username or password");
+      res.render("badcredentials", { msg : "Invalid username or password" });
     }
   } catch (error) {
     console.error("Error logging in:", error);
-    res.status(500).send("Internal server error");
+    res.render("badcredentials", { msg : `Server Error ${error}` });
+
+ 
   }
 });
 

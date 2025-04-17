@@ -115,6 +115,29 @@ const createTask = async (payload) => {
     });
 };
 
+const updateTask = async (payload) => {
+  console.log("update task", payload);
+  fetch("http://localhost:8081/api/tasks", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Server response:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
 // Route to handle the edit user submission
 router.post("/updateuser/:id", async (req, res) => {
   console.log("update user");
@@ -214,39 +237,35 @@ function isAuthenticated(req, res, next) {
 // Login route
 router.post("/login", async (req, res) => {
   console.log("login route");
-  
+
   try {
-  const { username, password } = req.body;
-  console.log("username",username);
-  console.log("password",password);
-  
+    const { username, password } = req.body;
+    console.log("username", username);
+    console.log("password", password);
 
-  // const user = users.find((user) => user.username === username);
-  // console.assert
-  const response = await fetch(
-    "http://localhost:8081/api/users/email/" + username
-  );
-  const user = await response.json();
-  console.log("user", user);
+    // const user = users.find((user) => user.username === username);
+    // console.assert
+    const response = await fetch(
+      "http://localhost:8081/api/users/email/" + username
+    );
+    const user = await response.json();
+    console.log("user", user);
 
-  if (!user) {
-    return res.status(401).send("Invalid username or password");
-  }
+    if (!user) {
+      return res.status(401).send("Invalid username or password");
+    }
 
-  
     const passwordMatch = await bcrypt.compare(password, user.pw);
     if (passwordMatch) {
       req.session.userId = username;
       console.log("users", users);
       res.render("home", {});
     } else {
-      res.render("badcredentials", { msg : "Invalid username or password" });
+      res.render("badcredentials", { msg: "Invalid username or password" });
     }
   } catch (error) {
     console.error("Error logging in:", error);
-    res.render("badcredentials", { msg : `Server Error ${error}` });
-
- 
+    res.render("badcredentials", { msg: `Server Error ${error}` });
   }
 });
 
@@ -291,7 +310,7 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-  res.render("login", {});
+  res.render("login", { username: "jdoe@doe.com", password: "goodgrief" });
 });
 
 router.get("/showsessions", (req, res) => {
@@ -345,6 +364,54 @@ router.post("/addtask", async (req, res) => {
     });
     console.log("status", status);
     res.render("home", {});
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+router.get("/viewtasks", async (req, res) => {
+  // get the login user
+  const response = await fetch("http://localhost:8081/api/tasks");
+  const data = await response.json();
+  res.render("viewtasks", {
+    title: "View Tasks",
+    tasks: data,
+  });
+});
+
+router.get("/edittask/:id", async (req, res) => {
+  // get the login user
+  console.log("edittask", req.params.id);
+
+  const response = await fetch(
+    "http://localhost:8081/api/tasks/" + req.params.id
+  );
+  const data = await response.json();
+  console.log("edit task", data);
+  res.render("edittask", data);
+});
+
+router.post("/updatetask", async (req, res) => {
+  const { id, user_id, title, description, tags } = req.body;
+
+  console.log("updatetask", id, user_id, title, description, tags);
+  try {
+    const completed = req.body.completed;
+    const category_id = req.body.category_id;
+    const status = await updateTask({
+      id: id,
+      user_id: user_id,
+      title: title,
+      description: description,
+      tags: tags,
+      completed: true,
+      category_id: category_id ? category_id : "",
+    });
+    console.log("status", status);
+    const response = await fetch("http://localhost:8081/api/tasks");
+    const data = await response.json();
+    res.render("viewtasks", data);
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).send("Internal server error");

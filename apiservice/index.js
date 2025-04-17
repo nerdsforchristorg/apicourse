@@ -137,6 +137,11 @@ async function getAllUsers(db) {
   //console.log('All Users:', rows);
   return rows;
 }
+async function getTaskById(db, id) {
+  console.log("get task", id);
+  const rows = await db.get("SELECT * FROM tasks WHERE id = ?", [id]);
+  return rows;
+}
 
 async function findUsersByFirstName(db, name) {
   console.log("find Users", name);
@@ -441,13 +446,13 @@ app.patch("/api/users", async function (req, res) {
   res.json(result);
 });
 
-// get one user  (R=CRUD)
+// get one task  (R=CRUD)
 app.get("/api/tasks/:id", async function (req, res) {
   console.log("get a task by id");
   console.log(req.params.id);
-  const users = await getTask(db, req.params.id);
-  console.log("get--> /api/users", users);
-  res.json(users);
+  const tasks = await getTaskById(db, req.params.id);
+  console.log("get--> /api/tasks", tasks);
+  res.json(tasks);
 });
 
 // create one tasks (C = CRUD)
@@ -490,7 +495,7 @@ app.post("/api/tasks", async function (req, res) {
   res.json({ status: false });
 });
 
-// update one user (U = CRUD)
+// update one task (U = CRUD)
 app.put("/api/tasks", async function (req, res) {
   console.log("put: tasks", req.body);
   const id = req.body.id.toString();
@@ -499,8 +504,8 @@ app.put("/api/tasks", async function (req, res) {
   const description = req.body.description;
   const update_at = new Date();
   const completed = req.body.completed;
-  const category_id = req.body.category_id;
-  const tags = req.body.tags;
+  const category_id = req.body.category_id ? req.body.category_id : "";
+  const tags = req.body.tags ? req.body.tags : "";
 
   let obj = [
     user_id,
@@ -512,11 +517,12 @@ app.put("/api/tasks", async function (req, res) {
     tags,
     id,
   ];
-  console.log("update tags", obj);
+  console.log("update task", obj);
   const result = await db.run(
     "UPDATE tasks SET user_id = ?, title = ?, description = ?, update_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?",
     obj
   );
+  console.log("update completed");
   res.json(result);
 });
 

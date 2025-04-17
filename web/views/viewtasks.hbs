@@ -1,4 +1,4 @@
-<h1>My Tasks</h1>
+<h1> My Tasks </h1>
 
 <ul class="list-group">
   {{#each tasks}}
@@ -6,16 +6,15 @@
       <a href="/edittask/{{id}}" type="button" class="btn btn-outline-primary">
         <i class="bi-pencil"></i>
       </a>
-      <strong> {{title}}-{{description}}</strong>
+      <a href="/deltask/{{id}}" type="button" class="btn btn-outline-primary">
+        <i class="bi-check-circle"></i>
+      </a>
+      <a href="/deltask/{{id}}" type="button" class="btn btn-outline-primary">
+        <i class="bi-x-square"></i>
+      </a>
+      <strong>{{title}}-{{description}}</strong>
       -
       {{email}}
     </li>
   {{/each}}
 </ul>
-
-<a type="button" href="/adduser" class="btn btn-primary">
-  <i class="bi bi-plus"></i>
-</a>
-<a type="button" href="/deletetask" class="btn btn-primary">
-  <i class="bi bi-plus"></i>
-</a>

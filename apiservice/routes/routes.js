@@ -1,37 +1,25 @@
-import express from "express";
-const app = express();
-app.use(express.json());
-// const sqlite3 = iimporire("sqlite3").verbose();
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import bcrypt from "bcrypt";
-
-import fs from "fs";
+import { Router } from 'express';
+const router = Router();
 
 const DBNAME = "./test.db";
 
-
-let db = null;
-
- 
-// swagger support
-
-import swaggerUi from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerDefinition from './swaggerDef.js';
-
-
+let db = global.db;
  
 
-const options = {
-  definition: swaggerDefinition,
-  apis: ['./index.js'], // path to your route files
-};
-
-const swaggerSpec = swaggerJSDoc(options);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+async function insertRow(db, row) {
+  //   const [name, color, weight] = process.argv.slice(2);
+  console.log("InsertRow");
+  return db.run(
+    `INSERT INTO users (id, firstName, lastName, email, pw, role) VALUES (?, ?, ?, ?,?,?)`,
+    row,
+    function (error) {
+      if (error) {
+        console.error(error.message);
+      }
+      console.log(`Inserted a row with the ID: ${this.lastID}`);
+    }
+  );
+}
 
 async function insertTask(db, row) {
   console.log("InsertRow Task", row);
@@ -52,51 +40,6 @@ async function insertTask(db, row) {
     }
   );
 }
- 
-
-async function tableCheck(db, tableName) {
-  console.log("table check", tableName);
-  return db.get(
-    `SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
-    [tableName],
-    (err, row) => {
-      if (err) {
-        console.error(err.message);
-        return false;
-      } else {
-        if (row) {
-          console.log(`Table "${tableName}" exists.`);
-          return true;
-        } else {
-          console.log(`Table "${tableName}" does not exist.`);
-          return false;
-        }
-      }
-    }
-  );
-}
- 
-  
-
-
- 
- 
-// ***************  App Starts Here   *********************
-
-db = await bootApp();
-global.db = db; 
-console.log("Db", db);
-
-// test db connection
-// const users = await getAllUsers(db);
-// console.log('get--> /api/users',users);
-
-const server = app.listen(8081, function () {
-  const host = server.address().address;
-  const port = server.address().port;
-  console.log("Example app listening at http://%s:%s", host, port);
-});
-
 
 function getAll() {
   console.log("get all");
@@ -189,80 +132,6 @@ async function getOneTask(db, id) {
   return result;
 }
 
-async function tableExist(tableName) {
-  db.get(
-    `SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
-    [tableName],
-    (err, row) => {
-      if (err) {
-        console.error(err.message);
-      }
-      if (row) {
-        console.log(`Table "${tableName}" exists.`);
-        return true;
-      } else {
-        console.log(`Table "${tableName}" does not exist.`);
-        return false;
-      }
-    }
-  );
-
-  db.close();
-}
-
-async function initToDoTable() {
-  console.log("Seed todo table");
-  const _db = await createDbConnection();
-  const check = await tableCheck(_db, "tasks");
-  if (check) {
-    return;
-  }
-  await createTasksTable(_db);
-  let obj1 = [
-    "1",
-    "1",
-    "Practice 3 Points",
-    "Coach asked me to improve my score",
-    "03/10/2025",
-    "03/10/2025",
-    "03/15/2025",
-    false,
-    "",
-    "basketball",
-    "improvement",
-  ];
-  await insertTask(_db, obj1);
-}
-
-async function initUserTable() {
-  console.log("InitUserTable");
-  const _db = await createDbConnection();
-
-  const check = await tableCheck(_db, "users");
-  if (check) {
-    return;
-  }
-
-  await createUserTable(_db);
-  let obj1 = ["1", "John", "Doe", "jdoe@doe.com", "goodgrief", "admin"];
-  let obj2 = ["2", "Fred", "Smith", "fs@smith.com", "goodgrief", "user"];
-  let obj3 = ["3", "Steve", "Gamer", "steve@gamer.com", "goodgrief", "user"];
-  let obj4 = ["4", "Good", "Will", "good@will.com", "goodgrief", "user"];
-
-  obj1[4] = await bcrypt.hash(obj1[4], 10);
-  await insertRow(_db, obj1);
-
-  obj2[4] = await bcrypt.hash(obj2[4], 10);
-  await insertRow(_db, obj2);
-
-  obj3[4] = await bcrypt.hash(obj3[4], 10);
-  await insertRow(_db, obj3);
-
-  obj4[4] = await bcrypt.hash(obj4[4], 10);
-  await insertRow(_db, obj4);
-
-  return _db;
-}
 
 async function openDb() {
   const db = await open({
@@ -272,39 +141,22 @@ async function openDb() {
   return db;
 }
 
-async function bootApp() {
-  // db the shared db variable for the database instance
-  console.log("bootapp");
-
-  if (fs.existsSync(DBNAME)) {
-    console.log("SQLite database exists.");
-    const db = await openDb();
-    await initToDoTable();
-    await initUserTable();
-    //console.log("db2",db);
-    return db;
-  } else {
-    console.log("SQLite database does not exist.");
-    await initToDoTable();
-    await initUserTable();
-  }
-}
 
 // ***************  Define Routes  *********************
 
-app.get("/about", (req, res) => {
+router.get("/about", (req, res) => {
   const td = new Date();
   console.log("About was called", td);
   res.send(`about ${td}`);
 });
 
-app.get("/aboutchris", (req, res) => {
+router.get("/aboutchris", (req, res) => {
   const td = new Date();
   console.log("About Chris was called", req);
   res.send(`about Christ ${td}`);
 });
 
-app.get("/aboutweather", (req, res) => {
+router.get("/aboutweather", (req, res) => {
   const td = new Date();
   console.log("About Weather", req);
 
@@ -331,14 +183,14 @@ app.get("/aboutweather", (req, res) => {
 });
 
 // Root Web
-app.get("/", function (req, res) {
+router.get("/", function (req, res) {
   console.log("req");
   const td = new Date();
   res.send("Hello world at abc" + td);
 });
 
 // get one user  (R=CRUD)
-app.get("/api/users/:id", async function (req, res) {
+router.get("/api/users/:id", async function (req, res) {
   console.log("get a users by id");
   console.log(req.params.id);
   const users = await getOne(db, req.params.id);
@@ -347,7 +199,7 @@ app.get("/api/users/:id", async function (req, res) {
 });
 
 // get one user  (R=CRUD)
-app.get("/api/users/email/:id", async function (req, res) {
+router.get("/api/users/email/:id", async function (req, res) {
   console.log("get a users by email");
   console.log(req.params.id);
   const users = await findUsersByEmail(db, req.params.id);
@@ -355,14 +207,24 @@ app.get("/api/users/email/:id", async function (req, res) {
   res.json(users);
 });
 
-app.get("/api/tasks", async function (req, res) {
+router.get("/api/tasks", async function (req, res) {
   const tasks = await getAllTasks(db);
   console.log("get--> /api/task", tasks);
   res.json(tasks);
 });
 
+/**
+ * @openapi
+ * /api/users:
+ *   get:
+ *     summary: users (R=CRUD)
+ *     responses:
+ *       200:
+ *         description: Returns all users
+ */
+
 // get all users (R = CRUD)
-app.get("/api/users", async function (req, res) {
+router.get("/api/users", async function (req, res) {
   const query = req.query;
   if (query.firstname && query.lastName) {
     console.log("Full Name search", query);
@@ -386,7 +248,7 @@ app.get("/api/users", async function (req, res) {
 });
 
 // create one user (C = CRUD)
-app.post("/api/users", async function (req, res) {
+router.post("/api/users", async function (req, res) {
   res.set("Access-Control-Allow-Origin", "*");
   res.set("Access-Control-Allow-Methods", "GET,POST");
   res.set("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
@@ -406,7 +268,7 @@ app.post("/api/users", async function (req, res) {
 });
 
 // update one user (U = CRUD)
-app.put("/api/users", async function (req, res) {
+router.put("/api/users", async function (req, res) {
   console.log("put: body", req.body);
   const id = req.body.id.toString();
   const firstName = req.body.firstName;
@@ -423,7 +285,7 @@ app.put("/api/users", async function (req, res) {
 });
 
 // update partial user (U = CRUD)
-app.patch("/api/users", async function (req, res) {
+router.patch("/api/users", async function (req, res) {
   console.log("patch: body", req.body);
   const id = req.body.id.toString();
   const email = req.body.email;
@@ -440,7 +302,7 @@ app.patch("/api/users", async function (req, res) {
 });
 
 // get one task  (R=CRUD)
-app.get("/api/tasks/:id", async function (req, res) {
+router.get("/api/tasks/:id", async function (req, res) {
   console.log("get a task by id");
   console.log(req.params.id);
   const tasks = await getTaskById(db, req.params.id);
@@ -449,7 +311,7 @@ app.get("/api/tasks/:id", async function (req, res) {
 });
 
 // create one tasks (C = CRUD)
-app.post("/api/tasks", async function (req, res) {
+router.post("/api/tasks", async function (req, res) {
   res.set("Access-Control-Allow-Origin", "*");
   res.set("Access-Control-Allow-Methods", "GET,POST");
   res.set("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
@@ -489,7 +351,7 @@ app.post("/api/tasks", async function (req, res) {
 });
 
 // update one task (U = CRUD)
-app.put("/api/tasks", async function (req, res) {
+router.put("/api/tasks", async function (req, res) {
   console.log("put: tasks", req.body);
   const id = req.body.id.toString();
   const user_id = req.body.user_id;
@@ -520,7 +382,7 @@ app.put("/api/tasks", async function (req, res) {
 });
 
 // Delete one  task
-app.delete("/api/tasks/:id", async function (req, res) {
+router.delete("/api/tasks/:id", async function (req, res) {
   console.log("delete tasks", req.params.id);
   const id = req.params.id;
   const result = await db.run("DELETE from tasks WHERE id = ?", [id]);
@@ -529,7 +391,7 @@ app.delete("/api/tasks/:id", async function (req, res) {
 });
 
 // Delete one  user
-app.delete("/api/users/:id", async function (req, res) {
+router.delete("/api/users/:id", async function (req, res) {
   console.log(req.params.id);
   const id = req.params.id;
   const result = await db.run("DELETE from users WHERE id = ?", [id]);
@@ -540,10 +402,11 @@ app.delete("/api/users/:id", async function (req, res) {
 
 // global
 // const db = createDbConnection();
-app.get("/api/init", function (req, res) {
+router.get("/api/init", function (req, res) {
   console.log("req");
   const td = new Date();
   res.send("app Init" + td);
 });
 
- 
+
+export default router;

@@ -2,13 +2,13 @@
 export default {
     openapi: '3.0.0',
     info: {
-      title: 'My API',
+      title: 'Todo App API',
       version: '1.0.0',
       description: 'API documentation using Swagger',
     },
     servers: [
       {
-        url: 'http://localhost:8081',
+        url: 'http://localhost:3200',
       },
     ],
   };

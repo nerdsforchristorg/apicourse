@@ -20,7 +20,6 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerDefinition from './swaggerDef.js';
 
-
  
 
 const options = {
@@ -346,7 +345,15 @@ app.get("/api/users/:id", async function (req, res) {
   res.json(users);
 });
 
-// get one user  (R=CRUD)
+/**
+ * @openapi
+ * /api/users/email/:id
+ *   get:
+ *     summary: returns one user by id (R=CRUD)
+ *     responses:
+ *       200:
+ *         description: Returns all users
+ */
 app.get("/api/users/email/:id", async function (req, res) {
   console.log("get a users by email");
   console.log(req.params.id);
@@ -360,8 +367,15 @@ app.get("/api/tasks", async function (req, res) {
   console.log("get--> /api/task", tasks);
   res.json(tasks);
 });
-
-// get all users (R = CRUD)
+/**
+ * @openapi
+ * /api/users:
+ *   get:
+ *     summary: users (R=CRUD)
+ *     responses:
+ *       200:
+ *         description: Returns all users
+ */
 app.get("/api/users", async function (req, res) {
   const query = req.query;
   if (query.firstname && query.lastName) {
@@ -385,7 +399,34 @@ app.get("/api/users", async function (req, res) {
   }
 });
 
-// create one user (C = CRUD)
+/**
+ * @openapi
+ * /api/users:
+ *   post:
+ *     summary: creates user (R=CRUD)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               age:
+ *                 type: integer
+ *                 example: 30
+ *     responses:
+ *       200:
+ *         description: Returns status code
+ */
 app.post("/api/users", async function (req, res) {
   res.set("Access-Control-Allow-Origin", "*");
   res.set("Access-Control-Allow-Methods", "GET,POST");

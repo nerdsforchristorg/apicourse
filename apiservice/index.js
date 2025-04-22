@@ -10,27 +10,22 @@ import fs from "fs";
 
 const DBNAME = "./test.db";
 
-
 let db = null;
 
- 
 // swagger support
 
-import swaggerUi from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerDefinition from './swaggerDef.js';
-
- 
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerDefinition from "./swaggerDef.js";
 
 const options = {
   definition: swaggerDefinition,
-  apis: ['./index.js'], // path to your route files
+  apis: ["./index.js"], // path to your route files
 };
 
 const swaggerSpec = swaggerJSDoc(options);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 async function insertTask(db, row) {
   console.log("InsertRow Task", row);
@@ -51,7 +46,6 @@ async function insertTask(db, row) {
     }
   );
 }
- 
 
 async function tableCheck(db, tableName) {
   console.log("table check", tableName);
@@ -74,16 +68,11 @@ async function tableCheck(db, tableName) {
     }
   );
 }
- 
-  
 
-
- 
- 
 // ***************  App Starts Here   *********************
 
 db = await bootApp();
-global.db = db; 
+global.db = db;
 console.log("Db", db);
 
 // test db connection
@@ -95,7 +84,6 @@ const server = app.listen(8081, function () {
   const port = server.address().port;
   console.log("Example app listening at http://%s:%s", host, port);
 });
-
 
 function getAll() {
   console.log("get all");
@@ -480,6 +468,18 @@ app.patch("/api/users", async function (req, res) {
   res.json(result);
 });
 
+/**
+ * @openapi
+ * /api/tasks/{id}:
+ *   get:
+ *     summary: read one task (R=CRUD)
+ *     parameters:
+ *
+ *     responses:
+ *       200:
+ *         description: Returns one task
+ */
+
 // get one task  (R=CRUD)
 app.get("/api/tasks/:id", async function (req, res) {
   console.log("get a task by id");
@@ -536,7 +536,7 @@ app.put("/api/tasks", async function (req, res) {
   const user_id = req.body.user_id;
   const title = req.body.title;
   const description = req.body.description;
-  const update_at = new Date();
+  const updated_at = new Date().toDateString;
   const completed = req.body.completed;
   const category_id = req.body.category_id ? req.body.category_id : "";
   const tags = req.body.tags ? req.body.tags : "";
@@ -545,7 +545,7 @@ app.put("/api/tasks", async function (req, res) {
     user_id,
     title,
     description,
-    update_at,
+    updated_at,
     completed,
     category_id,
     tags,
@@ -553,7 +553,7 @@ app.put("/api/tasks", async function (req, res) {
   ];
   console.log("update task", obj);
   const result = await db.run(
-    "UPDATE tasks SET user_id = ?, title = ?, description = ?, update_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?",
+    "UPDATE tasks SET user_id = ?, title = ?, description = ?, updated_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?",
     obj
   );
   console.log("update completed");
@@ -586,5 +586,3 @@ app.get("/api/init", function (req, res) {
   const td = new Date();
   res.send("app Init" + td);
 });
-
- 

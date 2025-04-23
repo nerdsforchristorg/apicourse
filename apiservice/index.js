@@ -20,7 +20,41 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerDefinition from './swaggerDef.js';
 
- 
+async function createUserTable(db) {
+  console.log("createUserTable function");
+  return db.exec(`
+  CREATE TABLE users
+  (
+    id  VARCHAR(60) NOT NULL,
+    firstName   VARCHAR(50) NOT NULL,
+    lastName   VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    pw VARCHAR(50) NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    imageURL VARCHAR(50) 
+    );
+`);
+}
+
+async function createTasksTable(db) {
+  console.log("create Tasks table");
+  return db.exec(`
+  CREATE TABLE tasks
+  (
+    id  VARCHAR(60) NOT NULL,
+    user_id   VARCHAR(50) NOT NULL,
+    title   VARCHAR(50) NOT NULL,
+    description VARCHAR(500) NOT NULL,
+    created_at  TEXT,
+    updated_at  TEXT,
+    due_date TEXT,
+    completed  BOOLEAN,
+    date_completed TEXT,
+    category_id VARCHAR(10),
+    tags TEXT
+    );
+`);
+}
 
 const options = {
   definition: swaggerDefinition,
@@ -480,7 +514,41 @@ app.patch("/api/users", async function (req, res) {
   res.json(result);
 });
 
-// get one task  (R=CRUD)
+ 
+/**
+ * @openapi
+ * /api/task/{id}:
+ *   get:
+ *     summary: Get a task by ID
+ *     description: Retrieves a task based on their unique ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The task's unique identifier
+ *         example: "12345"
+ *     responses:
+ *       200:
+ *         description: Task found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   example: "12345"
+ *                 name:
+ *                   type: string
+ *                   example: Jane Doe
+ *                 email:
+ *                   type: string
+ *                   example: jane@example.com
+ *       404:
+ *         description: User not found
+ */
 app.get("/api/tasks/:id", async function (req, res) {
   console.log("get a task by id");
   console.log(req.params.id);
@@ -536,7 +604,7 @@ app.put("/api/tasks", async function (req, res) {
   const user_id = req.body.user_id;
   const title = req.body.title;
   const description = req.body.description;
-  const update_at = new Date();
+  const updated_at = new Date().toDateString();
   const completed = req.body.completed;
   const category_id = req.body.category_id ? req.body.category_id : "";
   const tags = req.body.tags ? req.body.tags : "";
@@ -545,7 +613,7 @@ app.put("/api/tasks", async function (req, res) {
     user_id,
     title,
     description,
-    update_at,
+    updated_at,
     completed,
     category_id,
     tags,
@@ -553,7 +621,7 @@ app.put("/api/tasks", async function (req, res) {
   ];
   console.log("update task", obj);
   const result = await db.run(
-    "UPDATE tasks SET user_id = ?, title = ?, description = ?, update_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?",
+    "UPDATE tasks SET user_id = ?, title = ?, description = ?, updated_at = ?, completed = ?, category_id = ?, tags = ? WHERE id = ?",
     obj
   );
   console.log("update completed");

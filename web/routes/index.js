@@ -418,6 +418,25 @@ router.post("/updatetask", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 
+=======
+router.get("/deltask/:id", async (req, res) => {
+  // get the login user
+  console.log("deltask", req.params.id);
+
+  const response = await fetch(
+    "http://localhost:8081/api/tasks/" + req.params.id,
+    {
+      method: "DELETE",
+    }
+  );
+  const data = await response.json();
+  console.log("del task", data);
+  const taskResponse = await fetch("http://localhost:8081/api/tasks");
+  const taskData = await taskResponse.json();
+  res.render("viewtasks", taskData);
+});
+>>>>>>> refs/remotes/origin/main
 
 module.exports = router;

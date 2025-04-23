@@ -10,10 +10,8 @@ import fs from "fs";
 
 const DBNAME = "./test.db";
 
-
 let db = null;
 
- 
 // swagger support
 
 import swaggerUi from 'swagger-ui-express';
@@ -58,13 +56,12 @@ async function createTasksTable(db) {
 
 const options = {
   definition: swaggerDefinition,
-  apis: ['./index.js'], // path to your route files
+  apis: ["./index.js"], // path to your route files
 };
 
 const swaggerSpec = swaggerJSDoc(options);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 async function insertTask(db, row) {
   console.log("InsertRow Task", row);
@@ -85,7 +82,6 @@ async function insertTask(db, row) {
     }
   );
 }
- 
 
 async function tableCheck(db, tableName) {
   console.log("table check", tableName);
@@ -108,16 +104,11 @@ async function tableCheck(db, tableName) {
     }
   );
 }
- 
-  
 
-
- 
- 
 // ***************  App Starts Here   *********************
 
 db = await bootApp();
-global.db = db; 
+global.db = db;
 console.log("Db", db);
 
 // test db connection
@@ -129,7 +120,6 @@ const server = app.listen(8081, function () {
   const port = server.address().port;
   console.log("Example app listening at http://%s:%s", host, port);
 });
-
 
 function getAll() {
   console.log("get all");
@@ -514,6 +504,7 @@ app.patch("/api/users", async function (req, res) {
   res.json(result);
 });
 
+<<<<<<< HEAD
  
 /**
  * @openapi
@@ -549,6 +540,21 @@ app.patch("/api/users", async function (req, res) {
  *       404:
  *         description: User not found
  */
+=======
+/**
+ * @openapi
+ * /api/tasks/{id}:
+ *   get:
+ *     summary: read one task (R=CRUD)
+ *     parameters:
+ *
+ *     responses:
+ *       200:
+ *         description: Returns one task
+ */
+
+// get one task  (R=CRUD)
+>>>>>>> refs/remotes/origin/main
 app.get("/api/tasks/:id", async function (req, res) {
   console.log("get a task by id");
   console.log(req.params.id);
@@ -604,7 +610,11 @@ app.put("/api/tasks", async function (req, res) {
   const user_id = req.body.user_id;
   const title = req.body.title;
   const description = req.body.description;
+<<<<<<< HEAD
   const updated_at = new Date().toDateString();
+=======
+  const updated_at = new Date().toDateString;
+>>>>>>> refs/remotes/origin/main
   const completed = req.body.completed;
   const category_id = req.body.category_id ? req.body.category_id : "";
   const tags = req.body.tags ? req.body.tags : "";
@@ -654,5 +664,3 @@ app.get("/api/init", function (req, res) {
   const td = new Date();
   res.send("app Init" + td);
 });
-
- 

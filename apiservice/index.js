@@ -14,9 +14,9 @@ let db = null;
 
 // swagger support
 
-import swaggerUi from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerDefinition from './swaggerDef.js';
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerDefinition from "./swaggerDef.js";
 
 async function createUserTable(db) {
   console.log("createUserTable function");
@@ -504,43 +504,6 @@ app.patch("/api/users", async function (req, res) {
   res.json(result);
 });
 
-<<<<<<< HEAD
- 
-/**
- * @openapi
- * /api/task/{id}:
- *   get:
- *     summary: Get a task by ID
- *     description: Retrieves a task based on their unique ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The task's unique identifier
- *         example: "12345"
- *     responses:
- *       200:
- *         description: Task found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   example: "12345"
- *                 name:
- *                   type: string
- *                   example: Jane Doe
- *                 email:
- *                   type: string
- *                   example: jane@example.com
- *       404:
- *         description: User not found
- */
-=======
 /**
  * @openapi
  * /api/tasks/{id}:
@@ -554,7 +517,6 @@ app.patch("/api/users", async function (req, res) {
  */
 
 // get one task  (R=CRUD)
->>>>>>> refs/remotes/origin/main
 app.get("/api/tasks/:id", async function (req, res) {
   console.log("get a task by id");
   console.log(req.params.id);
@@ -610,11 +572,7 @@ app.put("/api/tasks", async function (req, res) {
   const user_id = req.body.user_id;
   const title = req.body.title;
   const description = req.body.description;
-<<<<<<< HEAD
-  const updated_at = new Date().toDateString();
-=======
   const updated_at = new Date().toDateString;
->>>>>>> refs/remotes/origin/main
   const completed = req.body.completed;
   const category_id = req.body.category_id ? req.body.category_id : "";
   const tags = req.body.tags ? req.body.tags : "";

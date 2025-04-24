@@ -363,7 +363,12 @@ router.post("/addtask", async (req, res) => {
       category_id: "abc",
     });
     console.log("status", status);
-    res.render("home", {});
+    const response = await fetch("http://localhost:8081/api/tasks");
+    const data = await response.json();
+    res.render("viewtasks", {
+      title: "View Tasks",
+      tasks: data,
+    });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).send("Internal server error");
@@ -411,16 +416,16 @@ router.post("/updatetask", async (req, res) => {
     console.log("status", status);
     const response = await fetch("http://localhost:8081/api/tasks");
     const data = await response.json();
-    res.render("viewtasks", data);
+    res.render("viewtasks", {
+      title: "View Tasks",
+      tasks: data,
+    });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).send("Internal server error");
   }
 });
 
-<<<<<<< HEAD
-
-=======
 router.get("/deltask/:id", async (req, res) => {
   // get the login user
   console.log("deltask", req.params.id);
@@ -435,8 +440,10 @@ router.get("/deltask/:id", async (req, res) => {
   console.log("del task", data);
   const taskResponse = await fetch("http://localhost:8081/api/tasks");
   const taskData = await taskResponse.json();
-  res.render("viewtasks", taskData);
+  res.render("viewtasks", {
+    title: "View Tasks",
+    tasks: taskData,
+  });
 });
->>>>>>> refs/remotes/origin/main
 
 module.exports = router;

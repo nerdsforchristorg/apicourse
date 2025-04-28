@@ -14,9 +14,9 @@ let db = null;
 
 // swagger support
 
-import swaggerUi from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerDefinition from './swaggerDef.js';
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerDefinition from "./swaggerDef.js";
 
 async function createUserTable(db) {
   console.log("createUserTable function");

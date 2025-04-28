@@ -418,9 +418,6 @@ router.post("/updatetask", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-
-=======
 router.get("/deltask/:id", async (req, res) => {
   // get the login user
   console.log("deltask", req.params.id);
@@ -437,6 +434,5 @@ router.get("/deltask/:id", async (req, res) => {
   const taskData = await taskResponse.json();
   res.render("viewtasks", taskData);
 });
->>>>>>> refs/remotes/origin/main
 
 module.exports = router;
